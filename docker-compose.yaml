@@ -1,0 +1,16 @@
+volumes:
+  numerical_data:
+
+services:
+  db:
+    container_name: ezdn-database
+    image: postgres:16-alpine
+    restart: on-failure
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=numerical
+      - POSTGRES_USER=local
+      - POSTGRES_PASSWORD=local
+    volumes:
+      - numerical_data:/var/lib/postgresql/data

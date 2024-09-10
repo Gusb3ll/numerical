@@ -1,0 +1,22 @@
+export const HttpStatus = {
+  OK: 200,
+  CREATED: 201,
+  NO_CONTENT: 204,
+  BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
+  NOT_FOUND: 404,
+  CONFLICT: 409,
+  INTERNAL_SERVER_ERROR: 500,
+  FAILED_TO_FETCH: 0,
+}
+
+export const ENDPOINT =
+  process.env.NEXT_PUBLIC_ENDPOINT || 'http://127.0.0.1:4000'
+
+export enum Method {
+  BISECTION = 1,
+  FALSE_POSITION = 2,
+  NEWTON = 3,
+  SECANT = 4,
+  ONE_POINT_ITERATION = 5,
+}

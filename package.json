@@ -1,0 +1,49 @@
+{
+  "name": "numerical",
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "dev": "dotenvx run -- turbo dev --env-mode=loose",
+    "dev:client": "dotenvx run -- turbo dev --filter=\"./apps/client\" --env-mode=loose",
+    "dev:server": "dotenvx run -- turbo dev --filter=\"./apps/server\" --env-mode=loose",
+    "build": "dotenvx run -- turbo build",
+    "build:package": "dotenvx run -- turbo build --filter=\"./packages/*\"",
+    "lint": "eslint . --fix",
+    "fmt": "prettier --write \"**/*.{ts,tsx,md,json}\"",
+    "db:push": "dotenvx run -- pnpm --filter=@numerical/db push",
+    "db:studio": "dotenvx run -- pnpm --filter=@numerical/db studio",
+    "db:generate": "dotenvx run -- pnpm --filter=@numerical/db generate",
+    "db:migrate:dev": "dotenvx run -- pnpm --filter=@numerical/db migrate:dev",
+    "db:migrate:deploy": "dotenvx run -- pnpm --filter=@numerical/db migrate:deploy",
+    "db:migrate:reset": "dotenvx run -- pnpm --filter=@numerical/db migrate:reset"
+  },
+  "dependencies": {
+    "@dotenvx/dotenvx": "1.12.1"
+  },
+  "devDependencies": {
+    "@types/node": "20.14.9",
+    "@typescript-eslint/eslint-plugin": "8.4.0",
+    "@typescript-eslint/parser": "8.4.0",
+    "eslint": "8.57.0",
+    "eslint-config-next": "14.2.7",
+    "eslint-config-prettier": "9.1.0",
+    "eslint-plugin-import": "2.29.1",
+    "eslint-plugin-unused-imports": "4.1.3",
+    "prettier": "3.3.3",
+    "prettier-plugin-tailwindcss": "0.6.6",
+    "rimraf": "6.0.1",
+    "tsx": "4.19.0",
+    "turbo": "2.1.1",
+    "typescript": "5.5.4"
+  },
+  "packageManager": "pnpm@9.9.0",
+  "prettier": {
+    "singleQuote": true,
+    "printWidth": 80,
+    "tabWidth": 2,
+    "semi": false,
+    "arrowParens": "avoid",
+    "plugins": [
+      "prettier-plugin-tailwindcss"
+    ]
+  }
+}

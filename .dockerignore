@@ -1,0 +1,12 @@
+**/node_modules
+**/dist
+**/.turbo
+**/.next
+.vscode
+.env.sample
+.eslintignore
+.eslintrc
+.gitignore
+.npmrc
+.prettierignore
+docker-compose.yaml
