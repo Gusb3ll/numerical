@@ -24,7 +24,7 @@ const Home = () => {
       ) : currentMethod === Method.ONE_POINT_ITERATION ? (
         <OnePointScene />
       ) : (
-        <></>
+        <BisectionScene />
       )}
     </AppLayout>
   )

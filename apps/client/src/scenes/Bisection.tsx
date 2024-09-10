@@ -3,13 +3,16 @@ import { MathJax } from 'better-react-mathjax'
 import dynamic from 'next/dynamic'
 import { useMemo, useState } from 'react'
 import { AxisOptions, Chart as ChartType } from 'react-charts'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { PuffLoader } from 'react-spinners'
+import { toast } from 'sonner'
 
-import { BisectionResult, bisection } from '@/services/root'
+import { BisectionArgs, bisection } from '@/services/root'
 import { NotoSansMath } from '@/utils'
 
 type Series = {
   label: string
-  data: BisectionResult[]
+  data: { i: number; v: number }[]
 }
 
 const Chart = dynamic(() => import('react-charts').then(mod => mod.Chart), {
@@ -17,57 +20,61 @@ const Chart = dynamic(() => import('react-charts').then(mod => mod.Chart), {
 }) as typeof ChartType
 
 const BisectionScene: React.FC = () => {
-  const data: Series[] = [
+  const [func, setFunc] = useState<string>('')
+  const [data, setData] = useState<Series[]>([
     {
-      label: 'React Charts',
-      data: [
-        {
-          i: 0,
-          xm: 1,
-          error: 1,
-          xl: 1,
-          xr: 1,
-        },
-        {
-          i: 1,
-          xm: 2,
-          error: 1,
-          xl: 1,
-          xr: 1,
-        },
-        {
-          i: 2,
-          xm: 4,
-          error: 1,
-          xl: 1,
-          xr: 1,
-        },
-      ],
+      label: 'xm',
+      data: [{ i: 0, v: 0 }],
     },
-  ]
+  ])
 
-  const [func, setFunc] = useState<string | null>(null)
-
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+    setValue,
+  } = useForm<BisectionArgs>()
   const bisectionMutation = useMutation({
-    mutationFn: () => bisection({ func: func!, xl: 0, xr: 2, error: 0.00001 }),
+    mutationFn: (args: BisectionArgs) => bisection(args),
   })
 
-  const onCalculate = async () => {
-    const result = await bisectionMutation.mutateAsync()
+  const onSubmit: SubmitHandler<BisectionArgs> = async args => {
+    try {
+      const res = await bisectionMutation.mutateAsync(args)
 
-    console.log(result)
+      setData([
+        {
+          label: 'xm',
+          data: res.map(r => ({ i: r.i, v: r.xm })),
+        },
+        {
+          label: 'Error',
+          data: res.map(r => ({ i: r.i, v: r.error })),
+        },
+      ])
+    } catch (e) {
+      toast.error((e as Error).message)
+    }
   }
 
   const primaryAxis = useMemo(
-    (): AxisOptions<BisectionResult> => ({
+    (): AxisOptions<Series['data'][0]> => ({
       getValue: datum => datum.i,
+      formatters: {
+        tooltip: (value: unknown) => `Iteration: ${value}`,
+      },
     }),
     [],
   )
   const secondaryAxes = useMemo(
-    (): AxisOptions<BisectionResult>[] => [
+    (): AxisOptions<Series['data'][0]>[] => [
       {
-        getValue: datum => datum.xm,
+        getValue: datum => datum.v,
+        formatters: {
+          tooltip: (value: unknown) => (
+            <MathJax>{'`$`'.replaceAll('$', value as string)}</MathJax>
+          ),
+        },
       },
     ],
     [],
@@ -75,40 +82,64 @@ const BisectionScene: React.FC = () => {
 
   return (
     <div className="box-shadow-example mx-auto my-4 flex h-[90dvh] w-[97dvw] flex-grow flex-row justify-between rounded-[12px] p-4">
-      <div className="flex flex-col gap-8">
-        <form action="">
-          <div className="flex flex-col gap-2 p-4">
-            <div className="flex flex-row items-center gap-1">
-              <MathJax>{'`f(x) = `'}</MathJax>
-              <input
-                type="text"
-                className={`border p-2 ${NotoSansMath.className}`}
-                onChange={e => setFunc(e.currentTarget.value)}
-              />
-            </div>
-            <div className="py-4">
-              <MathJax>
-                {'`f(x) = $`'.replaceAll('$', func ? func : '')}
-              </MathJax>
-            </div>
-            <div className="ml-3 flex flex-row items-center gap-1">
-              <MathJax>{'`X_L = `'}</MathJax>
-              <input
-                type="number"
-                className={`border p-2 ${NotoSansMath.className}`}
-              />
-            </div>
-            <div className="ml-3 flex flex-row items-center gap-1">
-              <MathJax>{'`X_R = `'}</MathJax>
-              <input
-                type="number"
-                className={`border p-2 ${NotoSansMath.className}`}
-              />
-            </div>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex flex-col gap-2 p-4">
+          <div className="flex flex-row items-center gap-1">
+            <MathJax>{'`f(x) = `'}</MathJax>
+            <input
+              required
+              type="text"
+              className={`border p-2 ${NotoSansMath.className}`}
+              onChange={e => {
+                setFunc(e.currentTarget.value)
+                setValue('func', e.currentTarget.value)
+              }}
+            />
           </div>
-          <button onClick={() => onCalculate()}>Calculate</button>
-        </form>
-      </div>
+          <div className="py-4">
+            <MathJax>{'`f(x) = $`'.replaceAll('$', func ? func : '')}</MathJax>
+          </div>
+          <div className="ml-3 flex flex-row items-center gap-1">
+            <MathJax>{'`X_L = `'}</MathJax>
+            <input
+              type="number"
+              step=".000001"
+              className={`border p-2 ${NotoSansMath.className}`}
+              {...register('xl', { required: true })}
+            />
+          </div>
+          <div className="ml-3 flex flex-row items-center gap-1">
+            <MathJax>{'`X_R = `'}</MathJax>
+            <input
+              type="number"
+              step=".000001"
+              className={`border p-2 ${NotoSansMath.className}`}
+              {...register('xr', { required: true })}
+            />
+          </div>
+          <div className="ml-1.5 flex flex-row items-center gap-1">
+            <MathJax>{'`Err = `'}</MathJax>
+            <input
+              type="number"
+              step=".000001"
+              className={`border p-2 ${NotoSansMath.className}`}
+              defaultValue="0.00001"
+              {...register('error', { required: true })}
+            />
+          </div>
+        </div>
+        <button
+          disabled={isSubmitting}
+          type="submit"
+          className={`mt-2 flex w-full items-center justify-center rounded-lg bg-gray-400 py-2 text-white transition-all hover:bg-gray-500 active:bg-gray-600 ${isSubmitting ? 'cursor-not-allowed' : ''}`}
+        >
+          {isSubmitting ? (
+            <PuffLoader size={24} color="#FFFFFF" />
+          ) : (
+            'Calculate'
+          )}
+        </button>
+      </form>
       <div className="h-[60%] w-[60%]">
         <Chart
           options={{

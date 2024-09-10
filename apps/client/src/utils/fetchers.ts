@@ -17,7 +17,7 @@ export const Get = async <T = Record<string, unknown>>(
       },
     })
 
-    return handleResponse(res)
+    return await handleResponse(res)
   } catch (e) {
     return (await handleError(e)) as ModifiedResponse<T>
   }
@@ -37,7 +37,7 @@ export const Post = async <T = Record<string, unknown>>(
       body: JSON.stringify(options?.data ? options.data : {}),
     })
 
-    return handleResponse(res)
+    return await handleResponse(res)
   } catch (e) {
     return (await handleError(e)) as ModifiedResponse<T>
   }
@@ -64,36 +64,36 @@ export const Post = async <T = Record<string, unknown>>(
 // }
 
 const handleResponse = async <T = Record<string, unknown>>(
-  res: Response,
+  response: Response,
 ): Promise<ModifiedResponse<T>> => {
-  if (res.ok) {
+  if (response.ok) {
     try {
-      const data = await res.json()
+      const result = await response.json()
 
       return {
-        statusCode: data.statusCode,
-        message: data.message,
-        data: data.data,
+        statusCode: result.statusCode,
+        message: result.message,
+        data: result.data,
       }
     } catch {
-      return { statusCode: 0, message: 'Failed to fetch' }
+      return { statusCode: 0, message: '' }
     }
   } else {
-    throw res
+    throw response
   }
 }
 
-const handleError = async (err: unknown): Promise<ModifiedResponse> => {
-  if (err instanceof Response) {
-    const data = await err.json()
+const handleError = async (error: unknown): Promise<ModifiedResponse> => {
+  if (error instanceof Response) {
+    const errorResponse = await error.json()
     try {
       return {
-        statusCode: data.statusCode,
-        data: data.data,
-        message: data.message,
+        statusCode: errorResponse.statusCode,
+        data: errorResponse.data,
+        message: errorResponse.message,
       }
     } catch {
-      return { statusCode: err.status, message: 'Failed to fetch' }
+      return { statusCode: error.status, message: '' }
     }
   } else {
     return { statusCode: 0, message: 'Failed to fetch' }

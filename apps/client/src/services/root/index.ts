@@ -5,7 +5,9 @@ import { BisectionArgs, BisectionResponse } from './types'
 export const bisection = async (args: BisectionArgs) => {
   const res = await fetchers.Post<BisectionResponse>(
     `${ENDPOINT}/root/bisection`,
-    { data: args },
+    {
+      data: { func: args.func, xl: +args.xl, xr: +args.xr, error: +args.error },
+    },
   )
 
   if (
