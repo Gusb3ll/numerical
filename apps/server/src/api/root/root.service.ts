@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import { evaluate, simplify } from 'mathjs'
 
 import { BisectionResult } from './dto'
@@ -12,9 +12,13 @@ export class RootService {
     const { func, xl: initXL, xr: initXR, error: initError } = args
 
     const equation = (x: number) => {
-      const f = simplify(func).toString()
+      try {
+        const f = simplify(func).toString()
 
-      return evaluate(f, { x })
+        return evaluate(f, { x })
+      } catch {
+        throw new BadRequestException('Invalid function')
+      }
     }
     const result: BisectionResult[] = []
 
