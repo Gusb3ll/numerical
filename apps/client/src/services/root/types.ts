@@ -14,3 +14,20 @@ export type BisectionResult = {
 }
 
 export type BisectionResponse = BisectionResult[]
+
+export type FalsePositionArgs = {
+  func: string
+  xl: number
+  xr: number
+  error: number
+}
+
+export type FalsePositionResult = {
+  i: number
+  xl: number
+  xr: number
+  xm: number
+  error: number
+}
+
+export type FalsePositionResponse = FalsePositionResult[]

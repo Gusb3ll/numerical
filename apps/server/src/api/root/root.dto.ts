@@ -15,6 +15,7 @@ export class FalsePositionArgs extends createZodDto(
     func: z.string(),
     xl: z.number(),
     xr: z.number(),
+    error: z.number(),
   }),
 ) {}
 

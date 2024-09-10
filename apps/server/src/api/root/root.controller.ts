@@ -1,7 +1,7 @@
 import { Body, Controller, HttpStatus, Post } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 
-import { BisectionArgs } from './root.dto'
+import { BisectionArgs, FalsePositionArgs } from './root.dto'
 import { RootService } from './root.service'
 
 @ApiTags('Root')
@@ -10,8 +10,15 @@ export class RootController {
   constructor(private readonly service: RootService) {}
 
   @Post('/bisection')
-  async bisection(@Body() args: BisectionArgs) {
-    const res = await this.service.bisection(args)
+  bisection(@Body() args: BisectionArgs) {
+    const res = this.service.bisection(args)
+
+    return { statusCode: HttpStatus.OK, data: res }
+  }
+
+  @Post('/false-position')
+  falsePosition(@Body() args: FalsePositionArgs) {
+    const res = this.service.falsePosition(args)
 
     return { statusCode: HttpStatus.OK, data: res }
   }
