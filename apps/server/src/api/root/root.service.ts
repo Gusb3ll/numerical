@@ -24,14 +24,17 @@ export class RootService {
 
     let xl = +initXL
     let xr = +initXR
+    let xm = 0
+    let prevXm = 0
 
     let i = 0
     while (i < MAX_ITERATION) {
-      const xm = +((xl + xr) / 2)
-      const error = +Math.abs((xr - xl) / xr)
+      xm = +((xl + xr) / 2)
+      const error = +Math.abs((xm - prevXm) / xm)
+
+      result.push({ i, xl, xr, xm, error })
 
       if (equation(xm) === 0 || error < initError) {
-        result.push({ i, xl, xr, xm, error })
         break
       }
 
@@ -41,8 +44,7 @@ export class RootService {
         xl = xm
       }
 
-      result.push({ i, xl, xr, xm, error })
-
+      prevXm = xm
       i++
     }
 
@@ -65,18 +67,24 @@ export class RootService {
 
     let xl = +initXL
     let xr = +initXR
+    let xm = 0
+    let prevXm = 0
 
     let i = 0
     while (i < MAX_ITERATION) {
-      const xm = +(
+      if (equation(xl) * equation(xr) >= 0) {
+        throw new BadRequestException('Invalid range')
+      }
+
+      xm = +(
         (xl * equation(xr) - xr * equation(xl)) /
         (equation(xr) - equation(xl))
       )
+      const error = +Math.abs((xm - prevXm) / xm)
 
-      const error = +Math.abs((xr - xl) / xr)
+      result.push({ i, xl, xr, xm, error })
 
       if (equation(xm) === 0 || error < initError) {
-        result.push({ i, xl, xr, xm, error })
         break
       }
 
@@ -86,8 +94,7 @@ export class RootService {
         xl = xm
       }
 
-      result.push({ i, xl, xr, xm, error })
-
+      prevXm = xm
       i++
     }
 

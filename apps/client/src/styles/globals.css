@@ -7,6 +7,6 @@
   padding: 0;
 }
 
-.box-shadow-example {
+.box-shadow-default {
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
 }

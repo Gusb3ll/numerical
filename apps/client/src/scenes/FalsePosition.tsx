@@ -29,7 +29,11 @@ const FalsePositionScene: React.FC = () => {
   const [func, setFunc] = useState<string>('')
   const [data, setData] = useState<Series[]>([
     {
-      label: (<MathJax>{'`X_m`'}</MathJax>) as unknown as string,
+      label: (
+        <MathJax inline dynamic>
+          {'`X_m`'}
+        </MathJax>
+      ) as unknown as string,
       data: [{ i: 0, v: 0 }],
     },
     {
@@ -54,7 +58,11 @@ const FalsePositionScene: React.FC = () => {
 
       setData([
         {
-          label: (<MathJax>{'`X_m`'}</MathJax>) as unknown as string,
+          label: (
+            <MathJax inline dynamic>
+              {'`X_m`'}
+            </MathJax>
+          ) as unknown as string,
           data: res.map(r => ({ i: r.i, v: r.xm })),
         },
         {
@@ -115,8 +123,8 @@ const FalsePositionScene: React.FC = () => {
   ]
 
   return (
-    <div className="box-shadow-example m-8 my-4 rounded-[12px] p-4">
-      <div className="grid h-[40dvh] grid-flow-row grid-cols-2 place-content-center">
+    <div className="box-shadow-default m-8 my-4 rounded-[12px] p-4">
+      <div className="grid h-full grid-flow-row grid-cols-1 place-content-center gap-4 md:h-[40dvh] md:grid-cols-2">
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col items-center"
@@ -135,7 +143,7 @@ const FalsePositionScene: React.FC = () => {
               />
             </div>
             <div className="py-4">
-              <MathJax>
+              <MathJax inline dynamic>
                 {'`f(x) = $`'.replaceAll('$', func ? func : '')}
               </MathJax>
             </div>
@@ -180,7 +188,7 @@ const FalsePositionScene: React.FC = () => {
             )}
           </button>
         </form>
-        <div className="h-full w-full">
+        <div className="h-[400px] w-full md:h-full">
           <Chart
             options={{
               data,
@@ -192,7 +200,7 @@ const FalsePositionScene: React.FC = () => {
       </div>
 
       {falsePositionMutation.data ? (
-        <div className="col-span-2 mt-8 h-full w-full">
+        <div className="col-span-2 mt-8 h-full w-full overflow-x-auto">
           <DataTable columns={columns} data={falsePositionMutation.data} />
         </div>
       ) : (
