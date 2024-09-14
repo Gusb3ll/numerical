@@ -82,9 +82,9 @@ export function DataTable<Data extends object>({
       <div className="mt-4 flex items-center justify-between px-4">
         <button
           onClick={() => table.previousPage()}
-          // isDisabled={!table.getCanPreviousPage()}
+          disabled={!table.getCanPreviousPage()}
+          className="disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {/* <ChevronLeftIcon h="6" w="6" /> */}
           Prev
         </button>
 
@@ -95,10 +95,10 @@ export function DataTable<Data extends object>({
 
         <button
           onClick={() => table.nextPage()}
-          // isDisabled={!table.getCanNextPage()}
+          disabled={!table.getCanNextPage()}
+          className="disabled:cursor-not-allowed disabled:opacity-50"
         >
           Next
-          {/* <ChevronRightIcon h="6" w="6" /> */}
         </button>
       </div>
     </>

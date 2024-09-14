@@ -112,7 +112,7 @@ const BisectionScene: React.FC = () => {
 
   return (
     <div className="box-shadow-example m-8 my-4 rounded-[12px] p-4">
-      <div className="grid h-[50dvh] grid-flow-row grid-cols-2">
+      <div className="grid h-[40dvh] grid-flow-row grid-cols-2 place-content-center">
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col items-center"
