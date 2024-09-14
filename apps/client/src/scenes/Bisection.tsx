@@ -25,7 +25,11 @@ const BisectionScene: React.FC = () => {
   const [func, setFunc] = useState<string>('')
   const [data, setData] = useState<Series[]>([
     {
-      label: (<MathJax>{'`X_m`'}</MathJax>) as unknown as string,
+      label: (
+        <MathJax inline dynamic>
+          {'`X_m`'}
+        </MathJax>
+      ) as unknown as string,
       data: [{ i: 0, v: 0 }],
     },
     {
@@ -50,7 +54,11 @@ const BisectionScene: React.FC = () => {
 
       setData([
         {
-          label: (<MathJax>{'`X_m`'}</MathJax>) as unknown as string,
+          label: (
+            <MathJax inline dynamic>
+              {'`X_m`'}
+            </MathJax>
+          ) as unknown as string,
           data: res.map(r => ({ i: r.i, v: r.xm })),
         },
         {
