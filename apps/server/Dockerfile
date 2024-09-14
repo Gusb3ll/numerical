@@ -39,4 +39,4 @@ COPY --from=builder --chown=server:nodejs /app /app
 COPY ./.env ./.env
 
 EXPOSE 4000
-CMD ["pnpm", "dotenv", "--", "node", "./apps/server/dist/main"]
+CMD ["pnpm", "dotenvx", "run", "--", "node", "./apps/server/dist/main"]
