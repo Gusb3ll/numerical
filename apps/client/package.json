@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "5.55.4",
+    "@tanstack/react-table": "8.20.5",
     "better-react-mathjax": "2.0.3",
     "jotai": "2.9.3",
     "mathjs": "13.1.1",

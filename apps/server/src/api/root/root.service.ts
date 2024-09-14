@@ -28,7 +28,7 @@ export class RootService {
     let i = 0
     while (i < MAX_ITERATION) {
       const xm = +((xl + xr) / 2)
-      const error = +Math.abs(xr - xl)
+      const error = +Math.abs((xr - xl) / xr)
 
       if (equation(xm) === 0 || error < initError) {
         result.push({ i, xl, xr, xm, error })
@@ -73,7 +73,7 @@ export class RootService {
         (equation(xr) - equation(xl))
       )
 
-      const error = +Math.abs(xr - xl)
+      const error = +Math.abs((xr - xl) / xr)
 
       if (equation(xm) === 0 || error < initError) {
         result.push({ i, xl, xr, xm, error })
