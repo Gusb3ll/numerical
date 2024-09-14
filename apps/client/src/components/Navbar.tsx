@@ -10,7 +10,7 @@ const Navbar = () => {
     <nav className="flex w-full flex-row items-center justify-between px-6 py-2 shadow-lg">
       <div className="flex flex-row items-center gap-8">
         <h1
-          className="cursor-pointer select-none text-[32px] font-bold"
+          className="cursor-pointer select-none text-[24px] font-bold md:text-[32px]"
           onClick={() => setCurrentMethod(null)}
         >
           [ Numerical ]

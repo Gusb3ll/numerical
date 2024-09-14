@@ -112,7 +112,7 @@ const BisectionScene: React.FC = () => {
 
   return (
     <div className="box-shadow-example m-8 my-4 rounded-[12px] p-4">
-      <div className="grid h-[40dvh] grid-flow-row grid-cols-2 place-content-center">
+      <div className="grid h-full grid-flow-row grid-cols-1 place-content-center gap-4 md:h-[40dvh] md:grid-cols-2">
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col items-center"
@@ -176,7 +176,7 @@ const BisectionScene: React.FC = () => {
             )}
           </button>
         </form>
-        <div className="h-full w-full">
+        <div className="h-[400px] w-full md:h-full">
           <Chart
             options={{
               data,
@@ -188,7 +188,7 @@ const BisectionScene: React.FC = () => {
       </div>
 
       {bisectionMutation.data ? (
-        <div className="col-span-2 mt-8 h-full w-full">
+        <div className="col-span-2 mt-8 h-full w-full overflow-x-auto">
           <DataTable columns={columns} data={bisectionMutation.data} />
         </div>
       ) : (
