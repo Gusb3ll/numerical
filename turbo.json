@@ -5,7 +5,8 @@
     "DATABASE_URL",
     "ENTROPY",
     "NEXTAUTH_URL",
-    "NEXTAUTH_SECRET"
+    "NEXTAUTH_SECRET",
+    "NEXT_PUBLIC_ENDPOINT"
   ],
   "tasks": {
     "dev": {
