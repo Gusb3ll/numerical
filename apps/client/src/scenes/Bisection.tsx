@@ -131,7 +131,7 @@ const BisectionScene: React.FC = () => {
               />
             </div>
             <div className="py-4">
-              <MathJax>
+              <MathJax inline dynamic>
                 {'`f(x) = $`'.replaceAll('$', func ? func : '')}
               </MathJax>
             </div>

@@ -7,6 +7,7 @@
     "dev:server": "dotenvx run -- turbo dev --filter=\"./apps/server\" --env-mode=loose",
     "build": "dotenvx run -- turbo build",
     "build:package": "dotenvx run -- turbo build --filter=\"./packages/*\"",
+    "start": "dotenvx run -- turbo start --env-mode=loose",
     "lint": "eslint . --fix",
     "fmt": "prettier --write \"**/*.{ts,tsx,md,json}\"",
     "db:push": "dotenvx run -- pnpm --filter=@numerical/db push",

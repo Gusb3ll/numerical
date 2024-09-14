@@ -15,7 +15,14 @@ const App = ({ Component, pageProps }: AppProps) => {
     <>
       <JotaiProvider>
         <QueryClientProvider client={queryClient}>
-          <MathJaxContext config={{ loader: { load: ['input/asciimath'] } }}>
+          <MathJaxContext
+            config={{
+              loader: { load: ['input/asciimath'] },
+              asciimath: {
+                displaystyle: true,
+              },
+            }}
+          >
             <main className={Inter.className}>
               <Toaster />
               <Component {...pageProps} />
