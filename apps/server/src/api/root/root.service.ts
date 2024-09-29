@@ -1,13 +1,56 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { evaluate, simplify } from 'mathjs'
 
-import { BisectionResult, FalsePositionResult } from './dto'
-import { BisectionArgs, FalsePositionArgs } from './root.dto'
+import { BisectionResult, FalsePositionResult, GraphicalResult } from './dto'
+import { BisectionArgs, FalsePositionArgs, GraphicalArgs } from './root.dto'
 
 const MAX_ITERATION = 5000
 
 @Injectable()
 export class RootService {
+  graphical(args: GraphicalArgs) {
+    const { func, xl: initXL, xr: initXR, error: initError } = args
+
+    const equation = (x: number) => {
+      try {
+        const f = simplify(func).toString()
+
+        return evaluate(f, { x })
+      } catch {
+        throw new BadRequestException('Invalid function')
+      }
+    }
+
+    const result: GraphicalResult[] = []
+
+    let xl = +initXL
+    let xr = +initXR
+    let i = 0
+
+    // TODO: Fix
+    while (i < MAX_ITERATION) {
+      const x = +((xl + xr) / 2)
+      const fx = equation(x)
+      const error = +Math.abs((x - xl) / x)
+
+      result.push({ i, x, fx, error })
+
+      if (fx === 0 || error < initError) {
+        break
+      }
+
+      if (equation(xl) * fx < 0) {
+        xr = x
+      } else {
+        xl = x
+      }
+
+      i++
+    }
+
+    return result
+  }
+
   bisection(args: BisectionArgs) {
     const { func, xl: initXL, xr: initXR, error: initError } = args
 

@@ -1,20 +1,30 @@
+export type GraphicalArgs = {
+  func: string
+  xl: number
+  xr: number
+  error: number
+}
+export type GraphicalResponse = {
+  i: number
+  x: number
+  fx: number
+  error: number
+}[]
+
 export type BisectionArgs = {
   func: string
   xl: number
   xr: number
   error: number
 }
-
-export type BisectionResult = {
+export type BisectionResponse = {
   i: number
   xl: number
   xr: number
   xm: number
   fxm: number
   error: number
-}
-
-export type BisectionResponse = BisectionResult[]
+}[]
 
 export type FalsePositionArgs = {
   func: string
@@ -22,14 +32,11 @@ export type FalsePositionArgs = {
   xr: number
   error: number
 }
-
-export type FalsePositionResult = {
+export type FalsePositionResponse = {
   i: number
   xl: number
   xr: number
   xm: number
   fxm: number
   error: number
-}
-
-export type FalsePositionResponse = FalsePositionResult[]
+}[]

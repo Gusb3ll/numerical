@@ -1,3 +1,10 @@
+export type GraphicalResult = {
+  i: number
+  x: number
+  fx: number
+  error: number
+}
+
 export type BisectionResult = {
   i: number
   xl: number

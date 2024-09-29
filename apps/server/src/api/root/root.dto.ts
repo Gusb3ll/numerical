@@ -1,6 +1,15 @@
 import { createZodDto } from 'nestjs-zod'
 import { z } from 'zod'
 
+export class GraphicalArgs extends createZodDto(
+  z.object({
+    func: z.string(),
+    xl: z.number(),
+    xr: z.number(),
+    error: z.number(),
+  }),
+) {}
+
 export class BisectionArgs extends createZodDto(
   z.object({
     func: z.string(),
