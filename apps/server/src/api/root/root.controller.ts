@@ -1,7 +1,12 @@
 import { Body, Controller, HttpStatus, Post } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 
-import { BisectionArgs, FalsePositionArgs, GraphicalArgs } from './root.dto'
+import {
+  BisectionArgs,
+  FalsePositionArgs,
+  GraphicalArgs,
+  OnePointIterationArgs,
+} from './root.dto'
 import { RootService } from './root.service'
 
 @ApiTags('Root')
@@ -26,6 +31,13 @@ export class RootController {
   @Post('/false-position')
   falsePosition(@Body() args: FalsePositionArgs) {
     const res = this.service.falsePosition(args)
+
+    return { statusCode: HttpStatus.OK, data: res }
+  }
+
+  @Post('/one-point-iteration')
+  onePointIteration(@Body() args: OnePointIterationArgs) {
+    const res = this.service.onePointIteration(args)
 
     return { statusCode: HttpStatus.OK, data: res }
   }

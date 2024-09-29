@@ -2,7 +2,12 @@ import { BadRequestException, Injectable } from '@nestjs/common'
 import { evaluate, simplify } from 'mathjs'
 
 import { BisectionResult, FalsePositionResult, GraphicalResult } from './dto'
-import { BisectionArgs, FalsePositionArgs, GraphicalArgs } from './root.dto'
+import {
+  BisectionArgs,
+  FalsePositionArgs,
+  GraphicalArgs,
+  OnePointIterationArgs,
+} from './root.dto'
 
 const MAX_ITERATION = 5000
 
@@ -142,6 +147,41 @@ export class RootService {
       }
 
       prevXm = xm
+      i++
+    }
+
+    return result
+  }
+
+  onePointIteration(args: OnePointIterationArgs) {
+    const { func, x0, error: initError } = args
+
+    const equation = (x: number) => {
+      try {
+        const f = simplify(func).toString()
+
+        return evaluate(f, { x })
+      } catch {
+        throw new BadRequestException('Invalid function')
+      }
+    }
+
+    const result = []
+
+    let x = x0
+    let i = 0
+
+    while (i < MAX_ITERATION) {
+      const xNext = equation(x)
+      const error = +Math.abs((xNext - x) / xNext)
+
+      result.push({ i, x: xNext, error })
+
+      if (error < initError) {
+        break
+      }
+
+      x = xNext
       i++
     }
 

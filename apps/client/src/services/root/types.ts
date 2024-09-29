@@ -40,3 +40,15 @@ export type FalsePositionResponse = {
   fxm: number
   error: number
 }[]
+
+export type OnePointsArgs = {
+  func: string
+  x0: number
+  error: number
+}
+export type OnePointResponse = {
+  i: number
+  x: number
+  fx: number
+  error: number
+}[]
