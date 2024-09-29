@@ -1,11 +1,11 @@
 import { useAtom } from 'jotai'
 
 import AppLayout from '@/components/Layouts/App'
-import BisectionScene from '@/scenes/Bisection'
-import FalsePositionScene from '@/scenes/FalsePosition'
-import NewtonScene from '@/scenes/Newton'
-import OnePointScene from '@/scenes/OnePoint'
-import SecantScene from '@/scenes/Secant'
+import BisectionScene from '@/scenes/Root/Bisection'
+import FalsePositionScene from '@/scenes/Root/FalsePosition'
+import NewtonScene from '@/scenes/Root/Newton'
+import OnePointScene from '@/scenes/Root/OnePoint'
+import SecantScene from '@/scenes/Root/Secant'
 import { Method, methodAtom } from '@/utils'
 
 const Home = () => {
@@ -13,7 +13,9 @@ const Home = () => {
 
   return (
     <AppLayout>
-      {currentMethod === Method.BISECTION ? (
+      {currentMethod === Method.GRAPHICAL ? (
+        <></>
+      ) : currentMethod === Method.BISECTION ? (
         <BisectionScene />
       ) : currentMethod === Method.FALSE_POSITION ? (
         <FalsePositionScene />

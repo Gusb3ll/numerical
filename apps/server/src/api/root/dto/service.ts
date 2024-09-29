@@ -3,6 +3,7 @@ export type BisectionResult = {
   xl: number
   xr: number
   xm: number
+  fxm: number
   error: number
 }
 
@@ -11,5 +12,6 @@ export type FalsePositionResult = {
   xl: number
   xr: number
   xm: number
+  fxm: number
   error: number
 }

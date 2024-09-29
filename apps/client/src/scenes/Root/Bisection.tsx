@@ -2,103 +2,48 @@ import { useMutation } from '@tanstack/react-query'
 import { createColumnHelper } from '@tanstack/react-table'
 import { MathJax } from 'better-react-mathjax'
 import dynamic from 'next/dynamic'
-import { useMemo, useState } from 'react'
-import { AxisOptions, Chart as ChartType } from 'react-charts'
+import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import PlotType from 'react-plotly.js'
 import { PuffLoader } from 'react-spinners'
 import { toast } from 'sonner'
 
 import { DataTable } from '@/components/DataTable'
-import {
-  FalsePositionArgs,
-  FalsePositionResponse,
-  falsePosition,
-} from '@/services/root'
+import { BisectionArgs, BisectionResponse, bisection } from '@/services/root'
 import { NotoSansMath } from '@/utils'
 
-type Series = {
-  label: string
-  data: { i: number; v: number }[]
-}
-
-const Chart = dynamic(() => import('react-charts').then(mod => mod.Chart), {
+const Plot = dynamic(() => import('react-plotly.js'), {
   ssr: false,
-}) as typeof ChartType
+}) as typeof PlotType
 
-const FalsePositionScene: React.FC = () => {
+const BisectionScene: React.FC = () => {
   const [func, setFunc] = useState<string>('')
-  const [data, setData] = useState<Series[]>([
-    {
-      label: (
-        <MathJax inline dynamic>
-          {'`X_m`'}
-        </MathJax>
-      ) as unknown as string,
-      data: [{ i: 0, v: 0 }],
-    },
-    {
-      label: 'Error',
-      data: [{ i: 0, v: 0 }],
-    },
-  ])
+  const [data, setData] = useState<{ xm: number[]; fxm: number[] }>()
 
   const {
     register,
     handleSubmit,
     formState: { isSubmitting },
     setValue,
-  } = useForm<FalsePositionArgs>()
-  const falsePositionMutation = useMutation({
-    mutationFn: (args: FalsePositionArgs) => falsePosition(args),
+  } = useForm<BisectionArgs>()
+  const bisectionMutation = useMutation({
+    mutationFn: (args: BisectionArgs) => bisection(args),
   })
 
-  const onSubmit: SubmitHandler<FalsePositionArgs> = async args => {
+  const onSubmit: SubmitHandler<BisectionArgs> = async args => {
     try {
-      const res = await falsePositionMutation.mutateAsync(args)
+      const res = await bisectionMutation.mutateAsync(args)
 
-      setData([
-        {
-          label: (
-            <MathJax inline dynamic>
-              {'`X_m`'}
-            </MathJax>
-          ) as unknown as string,
-          data: res.map(r => ({ i: r.i, v: r.xm })),
-        },
-        {
-          label: 'Error',
-          data: res.map(r => ({ i: r.i, v: r.error })),
-        },
-      ])
+      setData({
+        xm: res.map(i => i.xm),
+        fxm: res.map(i => i.fxm),
+      })
     } catch (e) {
       toast.error((e as Error).message)
     }
   }
 
-  const primaryAxis = useMemo(
-    (): AxisOptions<Series['data'][0]> => ({
-      getValue: datum => datum.i,
-      formatters: {
-        tooltip: (value: unknown) => `Iteration: ${value}`,
-      },
-    }),
-    [],
-  )
-  const secondaryAxes = useMemo(
-    (): AxisOptions<Series['data'][0]>[] => [
-      {
-        getValue: datum => datum.v,
-        formatters: {
-          tooltip: (value: unknown) => (
-            <MathJax>{'`$`'.replaceAll('$', value as string)}</MathJax>
-          ),
-        },
-      },
-    ],
-    [],
-  )
-
-  const columnHelper = createColumnHelper<FalsePositionResponse[0]>()
+  const columnHelper = createColumnHelper<BisectionResponse[0]>()
   const columns = [
     columnHelper.accessor('i', {
       cell: info => info.getValue(),
@@ -142,11 +87,6 @@ const FalsePositionScene: React.FC = () => {
                 }}
               />
             </div>
-            <div className="py-4">
-              <MathJax inline dynamic>
-                {'`f(x) = $`'.replaceAll('$', func ? func : '')}
-              </MathJax>
-            </div>
             <div className="ml-3 flex flex-row items-center gap-1">
               <MathJax>{'`X_L = `'}</MathJax>
               <input
@@ -188,20 +128,34 @@ const FalsePositionScene: React.FC = () => {
             )}
           </button>
         </form>
-        <div className="h-[400px] w-full md:h-full">
-          <Chart
-            options={{
-              data,
-              primaryAxis,
-              secondaryAxes,
-            }}
-          />
+        <div className="self-center py-4 text-start text-3xl">
+          <MathJax inline dynamic>
+            {'`f(x) = $`'.replaceAll('$', func ? func : '')}
+          </MathJax>
         </div>
       </div>
-
-      {falsePositionMutation.data ? (
+      {data ? (
+        <Plot
+          data={[
+            {
+              x: data.xm,
+              y: data.fxm,
+              type: 'scatter',
+              mode: 'lines+markers',
+              line: { color: 'cyan' },
+              marker: { color: 'red' },
+            },
+          ]}
+          layout={{ autosize: true, title: 'Graph' }}
+          config={{ responsive: true }}
+          className="h-[600px] w-full"
+        />
+      ) : (
+        <></>
+      )}
+      {bisectionMutation.data ? (
         <div className="col-span-2 mt-8 h-full w-full overflow-x-auto">
-          <DataTable columns={columns} data={falsePositionMutation.data} />
+          <DataTable columns={columns} data={bisectionMutation.data} />
         </div>
       ) : (
         <></>
@@ -210,4 +164,4 @@ const FalsePositionScene: React.FC = () => {
   )
 }
 
-export default FalsePositionScene
+export default BisectionScene
