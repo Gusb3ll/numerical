@@ -11,6 +11,8 @@ import {
   NewtonResponse,
   OnePointArgs,
   OnePointResponse,
+  SecantArgs,
+  SecantResponse,
 } from './types'
 
 export const graphical = async (args: GraphicalArgs) => {
@@ -98,6 +100,21 @@ export const newton = async (args: NewtonArgs) => {
   }
 
   return res.data as NewtonResponse
+}
+
+export const secant = async (args: SecantArgs) => {
+  const res = await fetchers.Post<SecantResponse>(`${ENDPOINT}/root/secant`, {
+    data: { func: args.func, x0: +args.x0, x1: +args.x1, error: +args.error },
+  })
+
+  if (
+    res.statusCode >= HttpStatus.BAD_REQUEST ||
+    res.statusCode === HttpStatus.FAILED_TO_FETCH
+  ) {
+    throw new Error(res.message)
+  }
+
+  return res.data as SecantResponse
 }
 
 export * from './types'

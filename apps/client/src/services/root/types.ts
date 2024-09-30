@@ -65,3 +65,16 @@ export type NewtonResponse = {
   fxP: number
   error: number
 }[]
+
+export type SecantArgs = {
+  func: string
+  x0: number
+  x1: number
+  error: number
+}
+export type SecantResponse = {
+  i: number
+  x: number
+  fx: number
+  error: number
+}[]

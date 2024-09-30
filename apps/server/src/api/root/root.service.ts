@@ -7,6 +7,7 @@ import {
   GraphicalResult,
   NewtonResult,
   OnePointIterationResult,
+  SecantResult,
 } from './dto'
 import {
   BisectionArgs,
@@ -14,6 +15,7 @@ import {
   GraphicalArgs,
   NewtonArgs,
   OnePointIterationArgs,
+  SecantArgs,
 } from './root.dto'
 
 const MAX_ITERATION = 5000
@@ -249,6 +251,56 @@ export class RootService {
       }
 
       x = xNext
+      i++
+    }
+
+    return result
+  }
+
+  secant(args: SecantArgs) {
+    const { func, x0, x1, error: initError } = args
+
+    const equation = (x: number) => {
+      try {
+        const f = simplify(func).toString()
+
+        return evaluate(f, { x })
+      } catch {
+        throw new BadRequestException('Invalid function')
+      }
+    }
+
+    const result: SecantResult[] = []
+
+    let xPrev = x0
+    let xCurr = x1
+    let i = 0
+    let fxPrev = equation(xPrev)
+    let fxCurr = equation(xCurr)
+
+    while (i < MAX_ITERATION) {
+      if (fxCurr - fxPrev === 0) {
+        throw new BadRequestException('Division by zero encountered.')
+      }
+
+      const xNext = xCurr - (fxCurr * (xCurr - xPrev)) / (fxCurr - fxPrev)
+      const error = Math.abs(xNext - xCurr)
+
+      result.push({
+        i,
+        x: xCurr,
+        fx: fxCurr,
+        error,
+      })
+
+      if (error < initError) {
+        break
+      }
+
+      xPrev = xCurr
+      fxPrev = fxCurr
+      xCurr = xNext
+      fxCurr = equation(xCurr)
       i++
     }
 

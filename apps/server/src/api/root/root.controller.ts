@@ -7,6 +7,7 @@ import {
   GraphicalArgs,
   NewtonArgs,
   OnePointIterationArgs,
+  SecantArgs,
 } from './root.dto'
 import { RootService } from './root.service'
 
@@ -46,6 +47,13 @@ export class RootController {
   @Post('/newton')
   newton(@Body() args: NewtonArgs) {
     const res = this.service.newton(args)
+
+    return { statusCode: HttpStatus.OK, data: res }
+  }
+
+  @Post('/secant')
+  secant(@Body() args: SecantArgs) {
+    const res = this.service.secant(args)
 
     return { statusCode: HttpStatus.OK, data: res }
   }

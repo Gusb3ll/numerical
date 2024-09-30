@@ -37,3 +37,10 @@ export type NewtonResult = {
   fxP: number
   error: number
 }
+
+export type SecantResult = {
+  i: number
+  x: number
+  fx: number
+  error: number
+}
