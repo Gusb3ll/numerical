@@ -52,3 +52,16 @@ export type OnePointResponse = {
   fx: number
   error: number
 }[]
+
+export type NewtonArgs = {
+  func: string
+  x0: number
+  error: number
+}
+export type NewtonResponse = {
+  i: number
+  x: number
+  fx: number
+  fxP: number
+  error: number
+}[]

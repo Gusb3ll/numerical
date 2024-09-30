@@ -40,6 +40,7 @@ export class NewtonArgs extends createZodDto(
   z.object({
     func: z.string(),
     x0: z.number(),
+    error: z.number(),
   }),
 ) {}
 
@@ -48,5 +49,6 @@ export class SecantArgs extends createZodDto(
     func: z.string(),
     x0: z.number(),
     x1: z.number(),
+    error: z.number(),
   }),
 ) {}

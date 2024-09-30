@@ -1,16 +1,18 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
-import { evaluate, simplify } from 'mathjs'
+import { derivative, evaluate, simplify } from 'mathjs'
 
 import {
   BisectionResult,
   FalsePositionResult,
   GraphicalResult,
+  NewtonResult,
   OnePointIterationResult,
 } from './dto'
 import {
   BisectionArgs,
   FalsePositionArgs,
   GraphicalArgs,
+  NewtonArgs,
   OnePointIterationArgs,
 } from './root.dto'
 
@@ -187,6 +189,66 @@ export class RootService {
       }
 
       x = fx
+      i++
+    }
+
+    return result
+  }
+
+  newton(args: NewtonArgs) {
+    const { func, x0, error: initError } = args
+
+    const equation = (x: number) => {
+      try {
+        const f = simplify(func).toString()
+
+        return evaluate(f, { x })
+      } catch {
+        throw new BadRequestException('Invalid function')
+      }
+    }
+
+    const equationDerivative = (x: number) => {
+      try {
+        const f = simplify(func).toString()
+
+        return derivative(f, 'x').evaluate({ x })
+      } catch {
+        throw new BadRequestException('Invalid function')
+      }
+    }
+
+    const result: NewtonResult[] = []
+
+    let x = x0
+    let i = 0
+    let fx = 0
+    let fxP = 0
+
+    while (i < MAX_ITERATION) {
+      fx = equation(x)
+      fxP = equationDerivative(x)
+
+      if (fxP === 0) {
+        throw new BadRequestException('Derivative is zero, method fails.')
+      }
+
+      const xNext = x - fx / fxP
+      const error = +Math.abs(xNext - x)
+
+      result.push({
+        i,
+        x,
+        fx,
+        fxP,
+        error,
+      })
+
+      if (error < initError) {
+        break
+      }
+
+      x = xNext
       i++
     }
 

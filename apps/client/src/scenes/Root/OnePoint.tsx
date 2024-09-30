@@ -127,6 +127,7 @@ const OnepointScene: React.FC = () => {
             {
               x: data.x,
               y: data.x,
+              name: 'x',
               type: 'scatter',
               mode: 'lines',
               line: { color: 'cyan', shape: 'spline' },
@@ -134,6 +135,7 @@ const OnepointScene: React.FC = () => {
             {
               x: data.x,
               y: data.fx,
+              name: 'fx',
               type: 'scatter',
               mode: 'lines',
               line: { color: 'green', shape: 'spline' },
@@ -141,6 +143,7 @@ const OnepointScene: React.FC = () => {
             {
               x: data.x,
               y: data.fx,
+              name: '',
               type: 'scatter',
               mode: 'lines+markers',
               line: { color: 'red', shape: 'hv' },

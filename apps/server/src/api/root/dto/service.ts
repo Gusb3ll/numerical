@@ -29,3 +29,11 @@ export type OnePointIterationResult = {
   fx: number
   error: number
 }
+
+export type NewtonResult = {
+  i: number
+  x: number
+  fx: number
+  fxP: number
+  error: number
+}

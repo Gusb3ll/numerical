@@ -7,6 +7,8 @@ import {
   FalsePositionResponse,
   GraphicalArgs,
   GraphicalResponse,
+  NewtonArgs,
+  NewtonResponse,
   OnePointArgs,
   OnePointResponse,
 } from './types'
@@ -81,6 +83,21 @@ export const onePoint = async (args: OnePointArgs) => {
   }
 
   return res.data as OnePointResponse
+}
+
+export const newton = async (args: NewtonArgs) => {
+  const res = await fetchers.Post<NewtonResponse>(`${ENDPOINT}/root/newton`, {
+    data: { func: args.func, x0: +args.x0, error: +args.error },
+  })
+
+  if (
+    res.statusCode >= HttpStatus.BAD_REQUEST ||
+    res.statusCode === HttpStatus.FAILED_TO_FETCH
+  ) {
+    throw new Error(res.message)
+  }
+
+  return res.data as NewtonResponse
 }
 
 export * from './types'
