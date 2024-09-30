@@ -22,3 +22,10 @@ export type FalsePositionResult = {
   fxm: number
   error: number
 }
+
+export type OnePointIterationResult = {
+  i: number
+  x: number
+  fx: number
+  error: number
+}

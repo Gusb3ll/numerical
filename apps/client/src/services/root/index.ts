@@ -7,6 +7,8 @@ import {
   FalsePositionResponse,
   GraphicalArgs,
   GraphicalResponse,
+  OnePointArgs,
+  OnePointResponse,
 } from './types'
 
 export const graphical = async (args: GraphicalArgs) => {
@@ -61,6 +63,24 @@ export const falsePosition = async (args: FalsePositionArgs) => {
   }
 
   return res.data as FalsePositionResponse
+}
+
+export const onePoint = async (args: OnePointArgs) => {
+  const res = await fetchers.Post<OnePointResponse>(
+    `${ENDPOINT}/root/one-point-iteration`,
+    {
+      data: { func: args.func, x0: +args.x0, error: +args.error },
+    },
+  )
+
+  if (
+    res.statusCode >= HttpStatus.BAD_REQUEST ||
+    res.statusCode === HttpStatus.FAILED_TO_FETCH
+  ) {
+    throw new Error(res.message)
+  }
+
+  return res.data as OnePointResponse
 }
 
 export * from './types'

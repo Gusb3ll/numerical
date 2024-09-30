@@ -1,7 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { evaluate, simplify } from 'mathjs'
 
-import { BisectionResult, FalsePositionResult, GraphicalResult } from './dto'
+import {
+  BisectionResult,
+  FalsePositionResult,
+  GraphicalResult,
+  OnePointIterationResult,
+} from './dto'
 import {
   BisectionArgs,
   FalsePositionArgs,
@@ -166,22 +171,22 @@ export class RootService {
       }
     }
 
-    const result = []
+    const result: OnePointIterationResult[] = []
 
     let x = x0
     let i = 0
 
     while (i < MAX_ITERATION) {
-      const xNext = equation(x)
-      const error = +Math.abs((xNext - x) / xNext)
+      const fx = equation(x)
+      const error = +Math.abs((fx - x) / fx)
 
-      result.push({ i, x: xNext, error })
+      result.push({ i, x, fx, error })
 
       if (error < initError) {
         break
       }
 
-      x = xNext
+      x = fx
       i++
     }
 

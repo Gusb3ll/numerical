@@ -9,57 +9,53 @@ import { PuffLoader } from 'react-spinners'
 import { toast } from 'sonner'
 
 import { DataTable } from '@/components/DataTable'
-import { BisectionArgs, BisectionResponse, bisection } from '@/services/root'
+import { OnePointArgs, OnePointResponse, onePoint } from '@/services/root'
 import { NotoSansMath } from '@/utils'
 
 const Plot = dynamic(() => import('react-plotly.js'), {
   ssr: false,
 }) as typeof PlotType
 
-const OnePointScene: React.FC = () => {
+const OnepointScene: React.FC = () => {
   const [func, setFunc] = useState<string>('')
-  const [data, setData] = useState<{ xm: number[]; fxm: number[] }>()
+  const [data, setData] = useState<{ x: number[]; fx: number[] }>()
 
   const {
     register,
     handleSubmit,
     formState: { isSubmitting },
     setValue,
-  } = useForm<BisectionArgs>()
-  const bisectionMutation = useMutation({
-    mutationFn: (args: BisectionArgs) => bisection(args),
+  } = useForm<OnePointArgs>()
+  const onePointMutation = useMutation({
+    mutationFn: (args: OnePointArgs) => onePoint(args),
   })
 
-  const onSubmit: SubmitHandler<BisectionArgs> = async args => {
+  const onSubmit: SubmitHandler<OnePointArgs> = async args => {
     try {
-      const res = await bisectionMutation.mutateAsync(args)
+      const res = await onePointMutation.mutateAsync(args)
 
       setData({
-        xm: res.map(i => i.xm),
-        fxm: res.map(i => i.fxm),
+        x: res.map(i => i.x),
+        fx: res.map(i => i.fx),
       })
     } catch (e) {
       toast.error((e as Error).message)
     }
   }
 
-  const columnHelper = createColumnHelper<BisectionResponse[0]>()
+  const columnHelper = createColumnHelper<OnePointResponse[0]>()
   const columns = [
     columnHelper.accessor('i', {
       cell: info => info.getValue(),
       header: 'Iteration',
     }),
-    columnHelper.accessor('xl', {
+    columnHelper.accessor('x', {
       cell: info => info.getValue(),
-      header: (<MathJax>{'`X_L`'}</MathJax>) as unknown as string,
+      header: (<MathJax>{'`x`'}</MathJax>) as unknown as string,
     }),
-    columnHelper.accessor('xr', {
+    columnHelper.accessor('fx', {
       cell: info => info.getValue(),
-      header: (<MathJax>{'`X_R`'}</MathJax>) as unknown as string,
-    }),
-    columnHelper.accessor('xm', {
-      cell: info => info.getValue(),
-      header: (<MathJax>{'`X_m`'}</MathJax>) as unknown as string,
+      header: (<MathJax>{'`f(x)`'}</MathJax>) as unknown as string,
     }),
     columnHelper.accessor('error', {
       cell: info => info.getValue(),
@@ -88,21 +84,12 @@ const OnePointScene: React.FC = () => {
               />
             </div>
             <div className="ml-3 flex flex-row items-center gap-1">
-              <MathJax>{'`X_L = `'}</MathJax>
+              <MathJax>{'`X_0 = `'}</MathJax>
               <input
                 type="number"
                 step=".000001"
                 className={`border p-2 ${NotoSansMath.className}`}
-                {...register('xl', { required: true })}
-              />
-            </div>
-            <div className="ml-3 flex flex-row items-center gap-1">
-              <MathJax>{'`X_R = `'}</MathJax>
-              <input
-                type="number"
-                step=".000001"
-                className={`border p-2 ${NotoSansMath.className}`}
-                {...register('xr', { required: true })}
+                {...register('x0', { required: true })}
               />
             </div>
             <div className="ml-1.5 flex flex-row items-center gap-1">
@@ -138,24 +125,41 @@ const OnePointScene: React.FC = () => {
         <Plot
           data={[
             {
-              x: data.xm,
-              y: data.fxm,
+              x: data.x,
+              y: data.x,
+              type: 'scatter',
+              mode: 'lines',
+              line: { color: 'cyan', shape: 'spline' },
+            },
+            {
+              x: data.x,
+              y: data.fx,
+              type: 'scatter',
+              mode: 'lines',
+              line: { color: 'green', shape: 'spline' },
+            },
+            {
+              x: data.x,
+              y: data.fx,
               type: 'scatter',
               mode: 'lines+markers',
-              line: { color: 'cyan' },
-              marker: { color: 'red' },
+              line: { color: 'red', shape: 'hv' },
+              marker: { color: 'blue' },
             },
           ]}
-          layout={{ autosize: true, title: 'Graph' }}
+          layout={{
+            autosize: true,
+            title: 'One Point Iteration Graph',
+          }}
           config={{ responsive: true }}
           className="h-[600px] w-full"
         />
       ) : (
         <></>
       )}
-      {bisectionMutation.data ? (
+      {onePointMutation.data ? (
         <div className="col-span-2 mt-8 h-full w-full overflow-x-auto">
-          <DataTable columns={columns} data={bisectionMutation.data} />
+          <DataTable columns={columns} data={onePointMutation.data} />
         </div>
       ) : (
         <></>
@@ -164,4 +168,4 @@ const OnePointScene: React.FC = () => {
   )
 }
 
-export default OnePointScene
+export default OnepointScene

@@ -146,7 +146,10 @@ const BisectionScene: React.FC = () => {
               marker: { color: 'red' },
             },
           ]}
-          layout={{ autosize: true, title: 'Graph' }}
+          layout={{
+            autosize: true,
+            title: 'Bisection Graph',
+          }}
           config={{ responsive: true }}
           className="h-[600px] w-full"
         />

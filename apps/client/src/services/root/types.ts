@@ -41,7 +41,7 @@ export type FalsePositionResponse = {
   error: number
 }[]
 
-export type OnePointsArgs = {
+export type OnePointArgs = {
   func: string
   x0: number
   error: number
