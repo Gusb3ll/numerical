@@ -82,14 +82,13 @@ export class RootService {
     let xl = +initXL
     let xr = +initXR
     let xm = 0
-    let fxm = 0
     let prevXm = 0
 
     let i = 0
     while (i < MAX_ITERATION) {
       xm = +((xl + xr) / 2)
+      const fxm = equation(xm)
       const error = +Math.abs((xm - prevXm) / xm)
-      fxm = equation(xm)
 
       result.push({ i, xl, xr, xm, fxm, error })
 

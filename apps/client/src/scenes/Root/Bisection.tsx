@@ -34,10 +34,10 @@ const BisectionScene: React.FC = () => {
     try {
       const res = await bisectionMutation.mutateAsync(args)
 
-      setData({
-        xm: res.map(i => i.xm),
-        fxm: res.map(i => i.fxm),
-      })
+      const xm = res.map(i => i.xm).sort((a, b) => a - b)
+      const fxm = res.map(i => i.fxm).sort((a, b) => a - b)
+
+      setData({ xm, fxm })
     } catch (e) {
       toast.error((e as Error).message)
     }
@@ -142,15 +142,25 @@ const BisectionScene: React.FC = () => {
               y: data.fxm,
               type: 'scatter',
               mode: 'lines+markers',
-              line: { color: 'cyan' },
-              marker: { color: 'red' },
+              marker: {
+                color: 'red',
+                size: 5,
+              },
+              line: {
+                color: 'green',
+                width: 1,
+              },
             },
           ]}
           layout={{
             autosize: true,
+            dragmode: 'pan',
             title: 'Bisection Graph',
           }}
-          config={{ responsive: true }}
+          config={{
+            responsive: true,
+            scrollZoom: true,
+          }}
           className="h-[600px] w-full"
         />
       ) : (
