@@ -128,10 +128,10 @@ const GaussianScene = () => {
                     key={j}
                     type="number"
                     className={`w-full border p-2 ${NotoSansMath.className}`}
-                    value={matrix[i][j]}
+                    value={matrix[j][i]}
                     onChange={e => {
                       const newMatrix = [...matrix]
-                      newMatrix[i][j] = parseFloat(e.currentTarget.value)
+                      newMatrix[j][i] = parseFloat(e.currentTarget.value)
                       setMatrix(newMatrix)
                     }}
                   />
@@ -159,7 +159,7 @@ const GaussianScene = () => {
                   value={matrixEqual[i]}
                   onChange={e => {
                     const newResult = [...matrixEqual]
-                    newResult[i] = +e.currentTarget.value
+                    newResult[i] = parseFloat(e.currentTarget.value)
                     setMatrixEqual(newResult)
                   }}
                 />

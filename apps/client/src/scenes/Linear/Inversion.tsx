@@ -1,19 +1,21 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import 'katex/dist/katex.min.css'
 import { MathJax } from 'better-react-mathjax'
-import { det } from 'mathjs'
+import { all, create, det } from 'mathjs'
 import { useState } from 'react'
 import { BlockMath } from 'react-katex'
+import { toast } from 'sonner'
 
 import { NotoSansMath } from '@/utils'
 
-const CramerScene = () => {
+const math = create(all)
+
+const InversionScene = () => {
   const [dimension, setDimension] = useState(3)
   const [matrixEqual, setMatrixEqual] = useState<number[]>(
     Array.from({ length: dimension }, () => 0),
   )
-  const [data, setData] = useState<
-    { detALatex: string; detAiLatex: string; resultLatex: string }[]
-  >([])
+  const [data, setData] = useState<string[]>([])
 
   const [matrix, setMatrix] = useState<number[][]>(
     Array.from({ length: dimension }, () =>
@@ -21,41 +23,56 @@ const CramerScene = () => {
     ),
   )
 
-  const replace = (matrix: number[][], matrixEqual: number[], col: number) => {
-    const newMatrix = matrix.map(row => [...row])
-    for (let i = 0; i < newMatrix.length; i++) {
-      newMatrix[col][i] = matrixEqual[i]
-    }
+  const matrixToLatex = (matrix: number[][]) => {
+    if (Array.isArray(matrix[0])) {
+      let latex = '\\begin{bmatrix} '
+      for (let i = 0; i < matrix.length; i++) {
+        latex += matrix[i].join(' & ') + ' \\\\ '
+      }
+      latex += '\\end{bmatrix}'
 
-    return newMatrix
+      return latex
+    } else {
+      let latex = '\\begin{bmatrix} '
+      for (let i = 0; i < matrix.length; i++) {
+        latex += matrix[i] + ' \\\\ '
+      }
+      latex += '\\end{bmatrix}'
+
+      return latex
+    }
   }
 
-  const calculateCramer = (
-    dim: number,
-    matrix: number[][],
-    matrixEqual: number[],
-  ) => {
-    const determinant = det(matrix)
-    const result = []
-
-    for (let i = 0; i < dim; i++) {
-      const replacedMatrix = replace(matrix, matrixEqual, i)
-
-      const detAi = det(replacedMatrix)
-      const res = detAi / determinant
-
-      const detALatex = `\\text{det (A)} = ${determinant.toFixed(2)}`
-      const detAiLatex = `\\text{det}(A_{${i + 1}}) = ${detAi.toFixed(2)}`
-      const resultLatex = `X_{${i + 1}} = \\frac{\\text{det}(A_{${i + 1}})}{\\text{det}(A)} = \\frac{${detAi.toFixed(2)}}{${determinant.toFixed(2)}} = ${res.toFixed(2)}`
-
-      result.push({
-        detALatex,
-        detAiLatex,
-        resultLatex,
-      })
+  const calculateIversion = (matrix: number[][], matrixEqual: number[]) => {
+    if (det(matrix) === 0) {
+      return toast.error('Matrix is singular')
     }
 
-    setData(result)
+    const A = math.matrix(matrix)
+    const B = math.matrix(matrixEqual)
+    const Ainv = math.inv(A)
+
+    const x = math.multiply(Ainv, B)
+
+    const stepsArray = []
+
+    const AArray = A.toArray()
+    const BArray = B.toArray()
+    const xArray = x.toArray().map(Math.round as any)
+    const invArray = Ainv.toArray()
+
+    stepsArray.push(
+      `\\text{Initial Matrix A:} \\quad ${matrixToLatex(AArray as any)}`,
+    )
+    stepsArray.push(
+      `\\text{Initial Matrix B:} \\quad ${matrixToLatex(BArray as any)}`,
+    )
+    stepsArray.push(
+      `\\text{Inverse Matrix A:} \\quad ${matrixToLatex(invArray as any)}`,
+    )
+    stepsArray.push(`\\text{ X:} \\quad ${matrixToLatex([xArray as number[]])}`)
+
+    setData(stepsArray)
   }
 
   return (
@@ -87,7 +104,7 @@ const CramerScene = () => {
             />
             <button
               className="rounded-md bg-green-200 px-4 py-2 transition-all hover:bg-green-300"
-              onClick={() => calculateCramer(dimension, matrix, matrixEqual)}
+              onClick={() => calculateIversion(matrix, matrixEqual)}
             >
               Calculate
             </button>
@@ -142,15 +159,9 @@ const CramerScene = () => {
       </div>
       {data.length > 0 && (
         <div className="box-shadow-default m-8 my-4 rounded-[12px] p-4">
-          {data.map((res, i) => (
-            <div key={i} className="flex flex-col gap-2">
-              <div>
-                <BlockMath>{res.detALatex}</BlockMath>
-                <BlockMath>{res.detAiLatex}</BlockMath>
-                <div className="pl-4">
-                  <BlockMath>{res.resultLatex}</BlockMath>
-                </div>
-              </div>
+          {data.map((step, idx) => (
+            <div key={idx} className="flex flex-col gap-2">
+              <BlockMath>{step}</BlockMath>
             </div>
           ))}
         </div>
@@ -159,4 +170,4 @@ const CramerScene = () => {
   )
 }
 
-export default CramerScene
+export default InversionScene

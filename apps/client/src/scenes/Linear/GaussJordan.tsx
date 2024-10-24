@@ -1,19 +1,16 @@
 import 'katex/dist/katex.min.css'
 import { MathJax } from 'better-react-mathjax'
-import { det } from 'mathjs'
 import { useState } from 'react'
 import { BlockMath } from 'react-katex'
 
 import { NotoSansMath } from '@/utils'
 
-const CramerScene = () => {
+const GaussJordanScene = () => {
   const [dimension, setDimension] = useState(3)
   const [matrixEqual, setMatrixEqual] = useState<number[]>(
     Array.from({ length: dimension }, () => 0),
   )
-  const [data, setData] = useState<
-    { detALatex: string; detAiLatex: string; resultLatex: string }[]
-  >([])
+  const [data, setData] = useState<string[]>([])
 
   const [matrix, setMatrix] = useState<number[][]>(
     Array.from({ length: dimension }, () =>
@@ -21,41 +18,64 @@ const CramerScene = () => {
     ),
   )
 
-  const replace = (matrix: number[][], matrixEqual: number[], col: number) => {
-    const newMatrix = matrix.map(row => [...row])
-    for (let i = 0; i < newMatrix.length; i++) {
-      newMatrix[col][i] = matrixEqual[i]
+  const matrixToLatex = (A: number[][], B: number[]) => {
+    let latex = '\\begin{bmatrix} '
+    for (let i = 0; i < A.length; i++) {
+      latex += A[i].join(' & ') + ' & ' + B[i] + ' \\\\ '
     }
+    latex += '\\end{bmatrix}'
 
-    return newMatrix
+    return latex
   }
 
-  const calculateCramer = (
+  const calculateGaussJordan = (
     dim: number,
     matrix: number[][],
     matrixEqual: number[],
   ) => {
-    const determinant = det(matrix)
-    const result = []
+    const obj = []
+    const stepsArray = []
+    const A = matrix.map(row => [...row])
+    const B = [...matrixEqual]
+
+    stepsArray.push(`\\text{Matrix A:} \\quad ` + matrixToLatex(A, B))
 
     for (let i = 0; i < dim; i++) {
-      const replacedMatrix = replace(matrix, matrixEqual, i)
+      const pivot = A[i][i]
+      stepsArray.push(
+        `\\text{Give row } ${i + 1}: \\quad \\frac{\\text{Row }${i + 1}}{${pivot}}`,
+      )
+      for (let j = i; j < dim; j++) {
+        A[i][j] /= pivot
+      }
+      B[i] /= pivot
 
-      const detAi = det(replacedMatrix)
-      const res = detAi / determinant
+      stepsArray.push(matrixToLatex(A, B))
 
-      const detALatex = `\\text{det (A)} = ${determinant.toFixed(2)}`
-      const detAiLatex = `\\text{det}(A_{${i + 1}}) = ${detAi.toFixed(2)}`
-      const resultLatex = `X_{${i + 1}} = \\frac{\\text{det}(A_{${i + 1}})}{\\text{det}(A)} = \\frac{${detAi.toFixed(2)}}{${determinant.toFixed(2)}} = ${res.toFixed(2)}`
+      for (let k = 0; k < dim; k++) {
+        if (k !== i) {
+          const factor = A[k][i]
+          stepsArray.push(
+            `\\text{Eliminate row } ${k + 1}: \\quad \\text{Row }${k + 1} - (${factor}) \\times \\text{Row }${i + 1}`,
+          )
 
-      result.push({
-        detALatex,
-        detAiLatex,
-        resultLatex,
-      })
+          for (let j = i; j < dim; j++) {
+            A[k][j] -= factor * A[i][j]
+          }
+          B[k] -= factor * B[i]
+          Math.round(stepsArray.push(matrixToLatex(A, B)))
+        }
+      }
     }
 
-    setData(result)
+    for (let i = dim - 1; i >= 0; i--) {
+      obj[i] = {
+        Xn: Math.round(B[i]),
+      }
+      stepsArray.push(`X_{${i + 1}} = ${Math.round(B[i])}`)
+    }
+
+    setData(stepsArray)
   }
 
   return (
@@ -87,7 +107,9 @@ const CramerScene = () => {
             />
             <button
               className="rounded-md bg-green-200 px-4 py-2 transition-all hover:bg-green-300"
-              onClick={() => calculateCramer(dimension, matrix, matrixEqual)}
+              onClick={() =>
+                calculateGaussJordan(dimension, matrix, matrixEqual)
+              }
             >
               Calculate
             </button>
@@ -142,15 +164,9 @@ const CramerScene = () => {
       </div>
       {data.length > 0 && (
         <div className="box-shadow-default m-8 my-4 rounded-[12px] p-4">
-          {data.map((res, i) => (
-            <div key={i} className="flex flex-col gap-2">
-              <div>
-                <BlockMath>{res.detALatex}</BlockMath>
-                <BlockMath>{res.detAiLatex}</BlockMath>
-                <div className="pl-4">
-                  <BlockMath>{res.resultLatex}</BlockMath>
-                </div>
-              </div>
+          {data.map((step, idx) => (
+            <div key={idx} className="flex flex-col gap-2">
+              <BlockMath>{step}</BlockMath>
             </div>
           ))}
         </div>
@@ -159,4 +175,4 @@ const CramerScene = () => {
   )
 }
 
-export default CramerScene
+export default GaussJordanScene
