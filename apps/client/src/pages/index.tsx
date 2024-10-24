@@ -5,6 +5,7 @@ import CramerScene from '@/scenes/Linear/Cramer'
 import GaussJordanScene from '@/scenes/Linear/GaussJordan'
 import GaussianScene from '@/scenes/Linear/Gaussian'
 import InversionScene from '@/scenes/Linear/Inversion'
+import LUDecompositionScene from '@/scenes/Linear/LUDecomposition'
 import BisectionScene from '@/scenes/Root/Bisection'
 import FalsePositionScene from '@/scenes/Root/FalsePosition'
 import GraphicalScene from '@/scenes/Root/Graphical'
@@ -40,6 +41,8 @@ const Home = () => {
         <GaussJordanScene />
       ) : currentMethod === Method.MATRIX_INVERSION ? (
         <InversionScene />
+      ) : currentMethod === Method.LU_DECOMPOSITION ? (
+        <LUDecompositionScene />
       ) : (
         <></>
       )}
