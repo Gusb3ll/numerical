@@ -1,6 +1,8 @@
 import { useAtom } from 'jotai'
 
 import AppLayout from '@/components/Layouts/App'
+import CramerScene from '@/scenes/Linear/Cramer'
+import GaussianScene from '@/scenes/Linear/Gaussian'
 import BisectionScene from '@/scenes/Root/Bisection'
 import FalsePositionScene from '@/scenes/Root/FalsePosition'
 import GraphicalScene from '@/scenes/Root/Graphical'
@@ -15,6 +17,7 @@ const Home = () => {
   return (
     <AppLayout>
       {currentMethod === Method.GRAPHICAL ? (
+        // Root
         <GraphicalScene />
       ) : currentMethod === Method.BISECTION ? (
         <BisectionScene />
@@ -26,6 +29,11 @@ const Home = () => {
         <SecantScene />
       ) : currentMethod === Method.ONE_POINT_ITERATION ? (
         <OnePointScene />
+      ) : // Linear
+      currentMethod === Method.CRAMER_RULE ? (
+        <CramerScene />
+      ) : currentMethod === Method.GAUSSIAN_ELIMINATION ? (
+        <GaussianScene />
       ) : (
         <></>
       )}
