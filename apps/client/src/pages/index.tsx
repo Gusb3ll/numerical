@@ -1,10 +1,13 @@
 import { useAtom } from 'jotai'
 
 import AppLayout from '@/components/Layouts/App'
+import ConjugateScene from '@/scenes/Linear/Conjugate'
 import CramerScene from '@/scenes/Linear/Cramer'
 import GaussJordanScene from '@/scenes/Linear/GaussJordan'
+import GaussSeidelScene from '@/scenes/Linear/GaussSeidel'
 import GaussianScene from '@/scenes/Linear/Gaussian'
 import InversionScene from '@/scenes/Linear/Inversion'
+import JacobiScene from '@/scenes/Linear/Jacobi'
 import LUDecompositionScene from '@/scenes/Linear/LUDecomposition'
 import BisectionScene from '@/scenes/Root/Bisection'
 import FalsePositionScene from '@/scenes/Root/FalsePosition'
@@ -43,6 +46,12 @@ const Home = () => {
         <InversionScene />
       ) : currentMethod === Method.LU_DECOMPOSITION ? (
         <LUDecompositionScene />
+      ) : currentMethod === Method.JACOBI_ITERATION ? (
+        <JacobiScene />
+      ) : currentMethod === Method.GAUSS_SEIDEL_ITERATION ? (
+        <GaussSeidelScene />
+      ) : currentMethod === Method.CONJUGATE_GRADIENT ? (
+        <ConjugateScene />
       ) : (
         <></>
       )}

@@ -67,6 +67,9 @@ const Navbar = () => {
               <option value={Method.MATRIX_INVERSION}>Matrix Inversion</option>
               <option value={Method.LU_DECOMPOSITION}>LU Decomposition</option>
               <option value={Method.JACOBI_ITERATION}>Jacobi Iteration</option>
+              <option value={Method.GAUSS_SEIDEL_ITERATION}>
+                Gauss-Seidel Iteration
+              </option>
               <option value={Method.CONJUGATE_GRADIENT}>
                 Conjugate Gradient
               </option>
