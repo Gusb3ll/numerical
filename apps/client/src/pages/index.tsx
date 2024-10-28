@@ -1,6 +1,9 @@
 import { useAtom } from 'jotai'
 
 import AppLayout from '@/components/Layouts/App'
+import LagrangeScene from '@/scenes/Interpolation/Lagrange'
+import NewtonDividedScene from '@/scenes/Interpolation/NewtonDivided'
+import SplineScene from '@/scenes/Interpolation/Spline'
 import ConjugateScene from '@/scenes/Linear/Conjugate'
 import CramerScene from '@/scenes/Linear/Cramer'
 import GaussJordanScene from '@/scenes/Linear/GaussJordan'
@@ -52,6 +55,12 @@ const Home = () => {
         <GaussSeidelScene />
       ) : currentMethod === Method.CONJUGATE_GRADIENT ? (
         <ConjugateScene />
+      ) : currentMethod === Method.NEWTON_DIVIDED_DIFFERENCE ? (
+        <NewtonDividedScene />
+      ) : currentMethod === Method.LAGRANGE_INTERPOLATION ? (
+        <LagrangeScene />
+      ) : currentMethod === Method.SPLINE_INTERPOLATION ? (
+        <SplineScene />
       ) : (
         <></>
       )}
