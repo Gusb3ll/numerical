@@ -3,6 +3,10 @@ import { useAtom } from 'jotai'
 import AppLayout from '@/components/Layouts/App'
 import MultipleRegressionScene from '@/scenes/Extrapolation/MultipleRegression'
 import SimpleRegressionScene from '@/scenes/Extrapolation/SimpleRegression'
+import CompositeSimpsonScene from '@/scenes/Integration/CompositeSimpson'
+import CompositeTrapezoidalScene from '@/scenes/Integration/CompositeTrapezoidal'
+import SimpsonScene from '@/scenes/Integration/Simpson'
+import TrapezoidalScene from '@/scenes/Integration/Trapezoidal'
 import LagrangeScene from '@/scenes/Interpolation/Lagrange'
 import NewtonDividedScene from '@/scenes/Interpolation/NewtonDivided'
 import SplineScene from '@/scenes/Interpolation/Spline'
@@ -67,6 +71,15 @@ const Home = () => {
         <SimpleRegressionScene />
       ) : currentMethod === Method.MULTIPLE_REGRESSION ? (
         <MultipleRegressionScene />
+      ) : // Integration
+      currentMethod === Method.TRAPEZOIDAL_RULE ? (
+        <TrapezoidalScene />
+      ) : currentMethod === Method.COMPOSITE_TRAPEZOIDAL_RULE ? (
+        <CompositeTrapezoidalScene />
+      ) : currentMethod === Method.SIMPSON_RULE ? (
+        <SimpsonScene />
+      ) : currentMethod === Method.COMPOSITE_SIMPSON_RULE ? (
+        <CompositeSimpsonScene />
       ) : (
         <></>
       )}
