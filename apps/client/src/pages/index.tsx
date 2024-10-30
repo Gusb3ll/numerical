@@ -1,6 +1,8 @@
 import { useAtom } from 'jotai'
 
 import AppLayout from '@/components/Layouts/App'
+import MultipleRegressionScene from '@/scenes/Extrapolation/MultipleRegression'
+import SimpleRegressionScene from '@/scenes/Extrapolation/SimpleRegression'
 import LagrangeScene from '@/scenes/Interpolation/Lagrange'
 import NewtonDividedScene from '@/scenes/Interpolation/NewtonDivided'
 import SplineScene from '@/scenes/Interpolation/Spline'
@@ -61,6 +63,10 @@ const Home = () => {
         <LagrangeScene />
       ) : currentMethod === Method.SPLINE_INTERPOLATION ? (
         <SplineScene />
+      ) : currentMethod === Method.SIMPLE_REGRESSION ? (
+        <SimpleRegressionScene />
+      ) : currentMethod === Method.MULTIPLE_REGRESSION ? (
+        <MultipleRegressionScene />
       ) : (
         <></>
       )}
