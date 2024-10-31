@@ -24,6 +24,7 @@ import GraphicalScene from '@/scenes/Root/Graphical'
 import NewtonScene from '@/scenes/Root/Newton'
 import OnePointScene from '@/scenes/Root/OnePoint'
 import SecantScene from '@/scenes/Root/Secant'
+import DifferentiationScene from '@/scenes/differentiation/Differentiation'
 import { Method, methodAtom } from '@/utils'
 
 const Home = () => {
@@ -80,6 +81,8 @@ const Home = () => {
         <SimpsonScene />
       ) : currentMethod === Method.COMPOSITE_SIMPSON_RULE ? (
         <CompositeSimpsonScene />
+      ) : currentMethod === Method.NUMERICAL_DIFFERENTIATION ? (
+        <DifferentiationScene />
       ) : (
         <></>
       )}
