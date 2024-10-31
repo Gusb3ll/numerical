@@ -1,4 +1,5 @@
 import { useAtom } from 'jotai'
+import Image from 'next/image'
 
 import AppLayout from '@/components/Layouts/App'
 import MultipleRegressionScene from '@/scenes/Extrapolation/MultipleRegression'
@@ -84,7 +85,15 @@ const Home = () => {
       ) : currentMethod === Method.NUMERICAL_DIFFERENTIATION ? (
         <DifferentiationScene />
       ) : (
-        <></>
+        <div className="flex h-[50%] w-screen items-center justify-center">
+          <Image
+            alt="Numer"
+            src="/image.png"
+            width={3362}
+            height={2623}
+            className="w-[800px]"
+          />
+        </div>
       )}
     </AppLayout>
   )
