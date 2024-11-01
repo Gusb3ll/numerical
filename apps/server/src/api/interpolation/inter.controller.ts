@@ -1,7 +1,9 @@
 import { Controller, Get, HttpStatus } from '@nestjs/common'
+import { ApiTags } from '@nestjs/swagger'
 
 import { InterService } from './inter.service'
 
+@ApiTags('Interpolation')
 @Controller('/interpolation')
 export class InterController {
   constructor(private readonly service: InterService) {}

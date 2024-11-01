@@ -1,7 +1,9 @@
 import { Controller, Get, HttpStatus, Query } from '@nestjs/common'
+import { ApiTags } from '@nestjs/swagger'
 
 import { LinearServie } from './linear.service'
 
+@ApiTags('Linear Algebra')
 @Controller('/linear')
 export class LinearController {
   constructor(private readonly service: LinearServie) {}
