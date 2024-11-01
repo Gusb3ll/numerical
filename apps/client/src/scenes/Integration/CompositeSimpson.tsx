@@ -33,7 +33,6 @@ const CompositeSimpsonScene = () => {
       } else {
         console.log(' odd', (area += 4 * f(x)))
       }
-      console.log(x)
     }
 
     area *= hTmp / 3
@@ -56,6 +55,8 @@ const CompositeSimpsonScene = () => {
   const onRandom = async () => {
     try {
       const res = await randomIntegrationMutation.mutateAsync()
+
+      console.log(res)
 
       setFunc(res.func)
       setXStart(res.xStart)

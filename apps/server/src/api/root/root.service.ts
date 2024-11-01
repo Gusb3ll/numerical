@@ -134,9 +134,9 @@ export class RootService {
 
     let i = 0
     while (i < MAX_ITERATION) {
-      if (equation(xl) * equation(xr) >= 0) {
-        throw new BadRequestException('Invalid range')
-      }
+      // if (equation(xl) * equation(xr) >= 0) {
+      //   throw new BadRequestException('Invalid range')
+      // }
 
       xm = +(
         (xl * equation(xr) - xr * equation(xl)) /

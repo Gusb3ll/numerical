@@ -4,7 +4,7 @@ import { IntegrationResponse } from './types'
 
 export const randomIntegration = async () => {
   const res = await fetchers.Get<IntegrationResponse>(
-    `${ENDPOINT}/interpolation/random`,
+    `${ENDPOINT}/integration/random`,
   )
 
   if (

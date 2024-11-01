@@ -78,6 +78,7 @@ const NewtonDividedScene = () => {
       setPointCount(res.points)
       setXValues(res.x)
       setFxValues(res.fx)
+      setStartX(res.xStart)
     } catch (e) {
       toast.error((e as Error).message)
     }

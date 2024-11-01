@@ -140,7 +140,7 @@ const GraphicalScene: React.FC = () => {
           <button
             disabled={isLoading}
             type="button"
-            className={`mt-2 flex items-center justify-center rounded-lg bg-teal-400 px-24 py-2 text-white transition-all hover:bg-gray-500 hover:bg-teal-500 active:bg-gray-600 ${isLoading ? 'cursor-not-allowed' : ''}`}
+            className={`mt-2 flex items-center justify-center rounded-lg bg-teal-400 px-24 py-2 text-white transition-all hover:bg-teal-500 active:bg-gray-600 ${isLoading ? 'cursor-not-allowed' : ''}`}
             onClick={() => onRandom()}
           >
             {isLoading ? <PuffLoader size={24} color="#FFFFFF" /> : 'Random'}
