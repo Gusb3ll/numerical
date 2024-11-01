@@ -1,12 +1,15 @@
 /* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import 'katex/dist/katex.min.css'
+import { useMutation } from '@tanstack/react-query'
 import { createColumnHelper } from '@tanstack/react-table'
 import { MathJax } from 'better-react-mathjax'
 import { useState } from 'react'
 import { BlockMath } from 'react-katex'
+import { toast } from 'sonner'
 
 import { DataTable } from '@/components/DataTable'
+import { randomMatrix } from '@/services/linear'
 import { NotoSansMath } from '@/utils'
 
 const GaussSeidelScene = () => {
@@ -29,17 +32,18 @@ const GaussSeidelScene = () => {
     matrixEqual: number[],
     matrixStart: number[],
   ) => {
-    const Maxiteration = 100
+    const data = []
+
+    const MAX_ITERATION = 100
     const e = 0.000001
     const A = matrix.map(row => [...row])
     const X = [...matrixStart]
-    const obj = []
     let e1 = 1
     let iteration = 0
 
-    while (e1 > e && iteration < Maxiteration) {
+    while (e1 > e && iteration < MAX_ITERATION) {
       e1 = 0
-      const newX = [...X]
+      const newX = [...matrixStart]
 
       for (let i = 0; i < n; i++) {
         let temp = 0
@@ -57,14 +61,14 @@ const GaussSeidelScene = () => {
 
       iteration++
 
-      obj.push({
-        iteration: iteration,
-        X: X,
+      data.push({
+        iteration,
+        X,
         error: e1,
       })
     }
 
-    setData(obj)
+    setData(data)
   }
 
   const columnHelper = createColumnHelper<any>()
@@ -92,6 +96,38 @@ const GaussSeidelScene = () => {
     }),
   ]
 
+  const onDimensionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newMatrix = Array.from({ length: +e.currentTarget.value }, (_, i) =>
+      Array.from(
+        { length: +e.currentTarget.value },
+        (_, j) => matrix[i]?.[j] ?? 0,
+      ),
+    )
+    const newEqual = Array.from(
+      { length: +e.currentTarget.value },
+      (_, i) => matrixEqual[i] ?? 0,
+    )
+
+    setMatrix(newMatrix)
+    setMatrixEqual(newEqual)
+    setDimension(+e.currentTarget.value)
+  }
+
+  const randomMatrixMutation = useMutation({
+    mutationFn: () => randomMatrix(dimension),
+  })
+
+  const onRandom = async () => {
+    try {
+      const res = await randomMatrixMutation.mutateAsync()
+      setMatrix(res.matrix)
+      setMatrixEqual(res.matrixEqual)
+      setMatrixStart(res.frontEqual)
+    } catch (e) {
+      toast.error((e as Error).message)
+    }
+  }
+
   return (
     <>
       <div className="box-shadow-default m-8 my-4 rounded-[12px] p-4">
@@ -104,21 +140,14 @@ const GaussSeidelScene = () => {
               value={dimension}
               min={2}
               className={`border p-2 ${NotoSansMath.className}`}
-              onChange={e => {
-                const currentMatrix = matrix
-                const newMatrix = Array.from(
-                  { length: +e.currentTarget.value },
-                  (_, i) =>
-                    Array.from(
-                      { length: +e.currentTarget.value },
-                      (_, j) => currentMatrix[i]?.[j] ?? 0,
-                    ),
-                )
-                setMatrix(newMatrix)
-
-                setDimension(+e.currentTarget.value)
-              }}
+              onChange={e => onDimensionChange(e)}
             />
+            <button
+              className="rounded-md bg-teal-400 px-4 py-2 transition-all hover:bg-teal-500"
+              onClick={() => onRandom()}
+            >
+              Random
+            </button>
             <button
               className="rounded-md bg-green-200 px-4 py-2 transition-all hover:bg-green-300"
               onClick={() =>
