@@ -12,8 +12,6 @@ import {
 } from '@tanstack/react-table'
 import { useState } from 'react'
 
-import { Inter } from '@/utils'
-
 export type DataTableProps<Data extends object> = {
   data: Data[]
   columns: ColumnDef<Data, any>[]
@@ -45,9 +43,7 @@ export function DataTable<Data extends object>({
 
   return (
     <>
-      <table
-        className={`w-full text-left text-sm rtl:text-right ${Inter.className}`}
-      >
+      <table className="w-full text-left text-sm rtl:text-right">
         <thead className="bg-gray-200 text-xs uppercase">
           {table.getHeaderGroups().map(headerGroup => (
             <tr key={headerGroup.id}>

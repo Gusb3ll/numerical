@@ -117,9 +117,6 @@ const Navbar = () => {
           )}
         </select>
       </div>
-      {/* <div>
-        <FaUser className="text-[32px]" />
-      </div> */}
     </nav>
   )
 }

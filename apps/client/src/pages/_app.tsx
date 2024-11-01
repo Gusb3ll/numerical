@@ -9,28 +9,26 @@ import { Toaster } from 'sonner'
 import { Inter } from '@/utils'
 
 const App = ({ Component, pageProps }: AppProps) => {
-  const [queryClient] = useState(() => new QueryClient())
+  const [client] = useState(() => new QueryClient())
 
   return (
-    <>
-      <JotaiProvider>
-        <QueryClientProvider client={queryClient}>
-          <MathJaxContext
-            config={{
-              loader: { load: ['input/asciimath'] },
-              asciimath: {
-                displaystyle: true,
-              },
-            }}
-          >
-            <main className={Inter.className}>
-              <Toaster />
-              <Component {...pageProps} />
-            </main>
-          </MathJaxContext>
-        </QueryClientProvider>
-      </JotaiProvider>
-    </>
+    <JotaiProvider>
+      <QueryClientProvider client={client}>
+        <MathJaxContext
+          config={{
+            loader: { load: ['input/asciimath'] },
+            asciimath: {
+              displaystyle: true,
+            },
+          }}
+        >
+          <main className={Inter.className}>
+            <Toaster />
+            <Component {...pageProps} />
+          </main>
+        </MathJaxContext>
+      </QueryClientProvider>
+    </JotaiProvider>
   )
 }
 
