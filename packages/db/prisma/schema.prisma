@@ -1,0 +1,31 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native"]
+  output        = "../dist/client"
+}
+
+enum RootMethod {
+  GRAPHICAL
+  BISECTION
+  FALSE_POSITION
+  ONE_POINT_ITERATION
+  NEWTON
+  SECANT
+}
+
+model Root {
+  id     String     @id @default(cuid())
+  method RootMethod
+  func   String
+  xl     Float      @default(0)
+  xr     Float      @default(0)
+  x0     Float      @default(0)
+  x1     Float      @default(0)
+
+  createdAt DateTime @default(now())
+}

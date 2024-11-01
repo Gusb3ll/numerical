@@ -10,12 +10,8 @@
     "start": "dotenvx run -- turbo start --env-mode=loose",
     "lint": "eslint . --fix",
     "fmt": "prettier --write \"**/*.{ts,tsx,md,json}\"",
-    "db:push": "dotenvx run -- pnpm --filter=@numerical/db push",
-    "db:studio": "dotenvx run -- pnpm --filter=@numerical/db studio",
-    "db:generate": "dotenvx run -- pnpm --filter=@numerical/db generate",
-    "db:migrate:dev": "dotenvx run -- pnpm --filter=@numerical/db migrate:dev",
-    "db:migrate:deploy": "dotenvx run -- pnpm --filter=@numerical/db migrate:deploy",
-    "db:migrate:reset": "dotenvx run -- pnpm --filter=@numerical/db migrate:reset"
+    "db:push": "dotenvx run -- pnpm --filter=@numer/db push",
+    "db:studio": "dotenvx run -- pnpm --filter=@numer/db studio"
   },
   "dependencies": {
     "@dotenvx/dotenvx": "1.12.1"

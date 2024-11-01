@@ -9,7 +9,12 @@ import { PuffLoader } from 'react-spinners'
 import { toast } from 'sonner'
 
 import { DataTable } from '@/components/DataTable'
-import { SecantArgs, SecantResponse, secant } from '@/services/root'
+import {
+  SecantArgs,
+  SecantResponse,
+  getRandomFunc,
+  secant,
+} from '@/services/root'
 import { NotoSansMath } from '@/utils'
 
 const Plot = dynamic(() => import('react-plotly.js'), {
@@ -29,8 +34,12 @@ const SecantScene: React.FC = () => {
     formState: { isSubmitting },
     setValue,
   } = useForm<SecantArgs>()
+
   const secantMutation = useMutation({
     mutationFn: (args: SecantArgs) => secant(args),
+  })
+  const randomFuncMutation = useMutation({
+    mutationFn: () => getRandomFunc('SECANT'),
   })
 
   const onSubmit: SubmitHandler<SecantArgs> = async args => {
@@ -45,6 +54,21 @@ const SecantScene: React.FC = () => {
       toast.error((e as Error).message)
     }
   }
+
+  const onRandom = async () => {
+    try {
+      const res = await randomFuncMutation.mutateAsync()
+
+      setFunc(res.func)
+      setValue('func', res.func)
+      setValue('x0', res.x0)
+      setValue('x1', res.x1)
+    } catch (e) {
+      toast.error((e as Error).message)
+    }
+  }
+
+  const isLoading = isSubmitting || randomFuncMutation.isPending
 
   const columnHelper = createColumnHelper<SecantResponse[0]>()
   const columns = [
@@ -116,15 +140,19 @@ const SecantScene: React.FC = () => {
             </div>
           </div>
           <button
-            disabled={isSubmitting}
-            type="submit"
-            className={`mt-2 flex items-center justify-center rounded-lg bg-gray-400 px-24 py-2 text-white transition-all hover:bg-gray-500 active:bg-gray-600 ${isSubmitting ? 'cursor-not-allowed' : ''}`}
+            disabled={isLoading}
+            type="button"
+            className={`mt-2 flex items-center justify-center rounded-lg bg-teal-400 px-24 py-2 text-white transition-all hover:bg-gray-500 hover:bg-teal-500 active:bg-gray-600 ${isLoading ? 'cursor-not-allowed' : ''}`}
+            onClick={() => onRandom()}
           >
-            {isSubmitting ? (
-              <PuffLoader size={24} color="#FFFFFF" />
-            ) : (
-              'Calculate'
-            )}
+            {isLoading ? <PuffLoader size={24} color="#FFFFFF" /> : 'Random'}
+          </button>
+          <button
+            disabled={isLoading}
+            type="submit"
+            className={`mt-2 flex items-center justify-center rounded-lg bg-gray-400 px-24 py-2 text-white transition-all hover:bg-gray-500 active:bg-gray-600 ${isLoading ? 'cursor-not-allowed' : ''}`}
+          >
+            {isLoading ? <PuffLoader size={24} color="#FFFFFF" /> : 'Calculate'}
           </button>
         </form>
         <div className="self-center py-4 text-start text-3xl">

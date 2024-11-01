@@ -11,6 +11,7 @@ import {
   NewtonResponse,
   OnePointArgs,
   OnePointResponse,
+  RandomResponse,
   SecantArgs,
   SecantResponse,
 } from './types'
@@ -115,6 +116,29 @@ export const secant = async (args: SecantArgs) => {
   }
 
   return res.data as SecantResponse
+}
+
+export const getRandomFunc = async (
+  method:
+    | 'GRAPHICAL'
+    | 'BISECTION'
+    | 'FALSE_POSITION'
+    | 'ONE_POINT_ITERATION'
+    | 'NEWTON'
+    | 'SECANT',
+) => {
+  const res = await fetchers.Get<RandomResponse>(
+    `${ENDPOINT}/root/random/${method}`,
+  )
+
+  if (
+    res.statusCode >= HttpStatus.BAD_REQUEST ||
+    res.statusCode === HttpStatus.FAILED_TO_FETCH
+  ) {
+    throw new Error(res.message)
+  }
+
+  return res.data as RandomResponse
 }
 
 export * from './types'

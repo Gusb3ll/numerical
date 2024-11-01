@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
+import { PrismaService } from '@numer/db'
 import { derivative, evaluate, simplify } from 'mathjs'
 
 import {
@@ -22,6 +23,8 @@ const MAX_ITERATION = 5000
 
 @Injectable()
 export class RootService {
+  constructor(private readonly db: PrismaService) {}
+
   graphical(args: GraphicalArgs) {
     const { func, xl: initXL, xr: initXR, error: initError } = args
 
@@ -304,5 +307,26 @@ export class RootService {
     }
 
     return result
+  }
+
+  async getRandomFunc(
+    method:
+      | 'GRAPHICAL'
+      | 'BISECTION'
+      | 'FALSE_POSITION'
+      | 'ONE_POINT_ITERATION'
+      | 'NEWTON'
+      | 'SECANT',
+  ) {
+    const roots = await this.db.root.findMany({
+      where: { method },
+    })
+
+    const res = roots[Math.floor(Math.random() * roots.length)]
+    if (!res) {
+      throw new BadRequestException('No function found')
+    }
+
+    return res
   }
 }

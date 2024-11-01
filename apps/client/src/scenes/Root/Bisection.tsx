@@ -9,7 +9,12 @@ import { PuffLoader } from 'react-spinners'
 import { toast } from 'sonner'
 
 import { DataTable } from '@/components/DataTable'
-import { BisectionArgs, BisectionResponse, bisection } from '@/services/root'
+import {
+  BisectionArgs,
+  BisectionResponse,
+  bisection,
+  getRandomFunc,
+} from '@/services/root'
 import { NotoSansMath } from '@/utils'
 
 const Plot = dynamic(() => import('react-plotly.js'), {
@@ -29,6 +34,9 @@ const BisectionScene: React.FC = () => {
   const bisectionMutation = useMutation({
     mutationFn: (args: BisectionArgs) => bisection(args),
   })
+  const randomFuncMutation = useMutation({
+    mutationFn: () => getRandomFunc('BISECTION'),
+  })
 
   const onSubmit: SubmitHandler<BisectionArgs> = async args => {
     try {
@@ -42,6 +50,21 @@ const BisectionScene: React.FC = () => {
       toast.error((e as Error).message)
     }
   }
+
+  const onRandom = async () => {
+    try {
+      const res = await randomFuncMutation.mutateAsync()
+
+      setFunc(res.func)
+      setValue('func', res.func)
+      setValue('xl', res.xl)
+      setValue('xr', res.xr)
+    } catch (e) {
+      toast.error((e as Error).message)
+    }
+  }
+
+  const isLoading = isSubmitting || randomFuncMutation.isPending
 
   const columnHelper = createColumnHelper<BisectionResponse[0]>()
   const columns = [
@@ -117,15 +140,19 @@ const BisectionScene: React.FC = () => {
             </div>
           </div>
           <button
-            disabled={isSubmitting}
-            type="submit"
-            className={`mt-2 flex items-center justify-center rounded-lg bg-gray-400 px-24 py-2 text-white transition-all hover:bg-gray-500 active:bg-gray-600 ${isSubmitting ? 'cursor-not-allowed' : ''}`}
+            disabled={isLoading}
+            type="button"
+            className={`mt-2 flex items-center justify-center rounded-lg bg-teal-400 px-24 py-2 text-white transition-all hover:bg-gray-500 hover:bg-teal-500 active:bg-gray-600 ${isLoading ? 'cursor-not-allowed' : ''}`}
+            onClick={() => onRandom()}
           >
-            {isSubmitting ? (
-              <PuffLoader size={24} color="#FFFFFF" />
-            ) : (
-              'Calculate'
-            )}
+            {isLoading ? <PuffLoader size={24} color="#FFFFFF" /> : 'Random'}
+          </button>
+          <button
+            disabled={isLoading}
+            type="submit"
+            className={`mt-2 flex items-center justify-center rounded-lg bg-gray-400 px-24 py-2 text-white transition-all hover:bg-gray-500 active:bg-gray-600 ${isLoading ? 'cursor-not-allowed' : ''}`}
+          >
+            {isLoading ? <PuffLoader size={24} color="#FFFFFF" /> : 'Calculate'}
           </button>
         </form>
         <div className="self-center py-4 text-start text-3xl">

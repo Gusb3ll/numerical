@@ -1,4 +1,4 @@
-import { Body, Controller, HttpStatus, Post } from '@nestjs/common'
+import { Body, Controller, Get, HttpStatus, Param, Post } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 
 import {
@@ -54,6 +54,14 @@ export class RootController {
   @Post('/secant')
   secant(@Body() args: SecantArgs) {
     const res = this.service.secant(args)
+
+    return { statusCode: HttpStatus.OK, data: res }
+  }
+
+  @Get('/random/:method')
+  async getRandomFunc(@Param('method') method: string) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const res = await this.service.getRandomFunc(method as any)
 
     return { statusCode: HttpStatus.OK, data: res }
   }

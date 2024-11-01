@@ -3,7 +3,7 @@ volumes:
 
 services:
   db:
-    container_name: ezdn-database
+    container_name: numer-database
     image: postgres:16-alpine
     restart: on-failure
     ports:

@@ -14,7 +14,6 @@ const CramerScene = () => {
   const [data, setData] = useState<
     { detALatex: string; detAiLatex: string; resultLatex: string }[]
   >([])
-
   const [matrix, setMatrix] = useState<number[][]>(
     Array.from({ length: dimension }, () =>
       Array.from({ length: dimension }, () => 0),
@@ -58,6 +57,25 @@ const CramerScene = () => {
     setData(result)
   }
 
+  const onDimensionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const currentMatrix = matrix
+    const newMatrix = Array.from({ length: +e.currentTarget.value }, (_, i) =>
+      Array.from(
+        { length: +e.currentTarget.value },
+        (_, j) => currentMatrix[i]?.[j] ?? 0,
+      ),
+    )
+    setMatrix(newMatrix)
+
+    const newEqual = Array.from(
+      { length: +e.currentTarget.value },
+      (_, i) => matrixEqual[i] ?? 0,
+    )
+    setMatrixEqual(newEqual)
+
+    setDimension(+e.currentTarget.value)
+  }
+
   return (
     <>
       <div className="box-shadow-default m-8 my-4 rounded-[12px] p-4">
@@ -70,21 +88,9 @@ const CramerScene = () => {
               value={dimension}
               min={2}
               className={`border p-2 ${NotoSansMath.className}`}
-              onChange={e => {
-                const currentMatrix = matrix
-                const newMatrix = Array.from(
-                  { length: +e.currentTarget.value },
-                  (_, i) =>
-                    Array.from(
-                      { length: +e.currentTarget.value },
-                      (_, j) => currentMatrix[i]?.[j] ?? 0,
-                    ),
-                )
-                setMatrix(newMatrix)
-
-                setDimension(+e.currentTarget.value)
-              }}
+              onChange={e => onDimensionChange(e)}
             />
+            <button></button>
             <button
               className="rounded-md bg-green-200 px-4 py-2 transition-all hover:bg-green-300"
               onClick={() => calculateCramer(dimension, matrix, matrixEqual)}
@@ -104,6 +110,7 @@ const CramerScene = () => {
                     onChange={e => {
                       const newMatrix = [...matrix]
                       newMatrix[j][i] = parseFloat(e.currentTarget.value)
+
                       setMatrix(newMatrix)
                     }}
                   />
@@ -132,6 +139,7 @@ const CramerScene = () => {
                   onChange={e => {
                     const newResult = [...matrixEqual]
                     newResult[i] = parseFloat(e.currentTarget.value)
+
                     setMatrixEqual(newResult)
                   }}
                 />

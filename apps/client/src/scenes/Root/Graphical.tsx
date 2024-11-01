@@ -9,7 +9,12 @@ import { PuffLoader } from 'react-spinners'
 import { toast } from 'sonner'
 
 import { DataTable } from '@/components/DataTable'
-import { GraphicalArgs, GraphicalResponse, graphical } from '@/services/root'
+import {
+  GraphicalArgs,
+  GraphicalResponse,
+  getRandomFunc,
+  graphical,
+} from '@/services/root'
 import { NotoSansMath } from '@/utils'
 
 const Plot = dynamic(() => import('react-plotly.js'), {
@@ -26,8 +31,12 @@ const GraphicalScene: React.FC = () => {
     formState: { isSubmitting },
     setValue,
   } = useForm<GraphicalArgs>()
+
   const graphicalMutation = useMutation({
     mutationFn: (args: GraphicalArgs) => graphical(args),
+  })
+  const randomFuncMutation = useMutation({
+    mutationFn: () => getRandomFunc('GRAPHICAL'),
   })
 
   const onSubmit: SubmitHandler<GraphicalArgs> = async args => {
@@ -42,6 +51,21 @@ const GraphicalScene: React.FC = () => {
       toast.error((e as Error).message)
     }
   }
+
+  const onRandom = async () => {
+    try {
+      const res = await randomFuncMutation.mutateAsync()
+
+      setFunc(res.func)
+      setValue('func', res.func)
+      setValue('xl', res.xl)
+      setValue('xr', res.xr)
+    } catch (e) {
+      toast.error((e as Error).message)
+    }
+  }
+
+  const isLoading = isSubmitting || randomFuncMutation.isPending
 
   const columnHelper = createColumnHelper<GraphicalResponse[0]>()
   const columns = [
@@ -77,6 +101,7 @@ const GraphicalScene: React.FC = () => {
                 required
                 type="text"
                 className={`border p-2 ${NotoSansMath.className}`}
+                value={func}
                 onChange={e => {
                   setFunc(e.currentTarget.value)
                   setValue('func', e.currentTarget.value)
@@ -113,15 +138,19 @@ const GraphicalScene: React.FC = () => {
             </div>
           </div>
           <button
-            disabled={isSubmitting}
-            type="submit"
-            className={`mt-2 flex items-center justify-center rounded-lg bg-gray-400 px-24 py-2 text-white transition-all hover:bg-gray-500 active:bg-gray-600 ${isSubmitting ? 'cursor-not-allowed' : ''}`}
+            disabled={isLoading}
+            type="button"
+            className={`mt-2 flex items-center justify-center rounded-lg bg-teal-400 px-24 py-2 text-white transition-all hover:bg-gray-500 hover:bg-teal-500 active:bg-gray-600 ${isLoading ? 'cursor-not-allowed' : ''}`}
+            onClick={() => onRandom()}
           >
-            {isSubmitting ? (
-              <PuffLoader size={24} color="#FFFFFF" />
-            ) : (
-              'Calculate'
-            )}
+            {isLoading ? <PuffLoader size={24} color="#FFFFFF" /> : 'Random'}
+          </button>
+          <button
+            disabled={isLoading}
+            type="submit"
+            className={`mt-2 flex items-center justify-center rounded-lg bg-gray-400 px-24 py-2 text-white transition-all hover:bg-gray-500 active:bg-gray-600 ${isLoading ? 'cursor-not-allowed' : ''}`}
+          >
+            {isLoading ? <PuffLoader size={24} color="#FFFFFF" /> : 'Calculate'}
           </button>
         </form>
         <div className="self-center py-4 text-start text-3xl">

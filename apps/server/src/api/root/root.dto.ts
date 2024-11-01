@@ -1,4 +1,4 @@
-import { createZodDto } from 'nestjs-zod'
+import { createZodDto, patchNestJsSwagger } from 'nestjs-zod'
 import { z } from 'zod'
 
 export class GraphicalArgs extends createZodDto(
@@ -52,3 +52,5 @@ export class SecantArgs extends createZodDto(
     error: z.number(),
   }),
 ) {}
+
+patchNestJsSwagger()

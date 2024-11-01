@@ -78,3 +78,11 @@ export type SecantResponse = {
   fx: number
   error: number
 }[]
+
+export type RandomResponse = {
+  func: string
+  xl: number
+  xr: number
+  x0: number
+  x1: number
+}
