@@ -29,3 +29,23 @@ model Root {
 
   createdAt DateTime @default(now())
 }
+
+model Interpolation {
+  id     String  @id @default(cuid())
+  points Int
+  x      Float[]
+  fx     Float[]
+  xStart Float
+
+  createdAt DateTime @default(now())
+}
+
+model Integration {
+  id     String @id @default(cuid())
+  func   String
+  xStart Float
+  xEnd   Float
+  n      Int
+
+  createdAt DateTime @default(now())
+}

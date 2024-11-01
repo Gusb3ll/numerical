@@ -1,12 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import 'katex/dist/katex.min.css'
+import { useMutation } from '@tanstack/react-query'
 import { MathJax } from 'better-react-mathjax'
 import { evaluate } from 'mathjs'
 import dynamic from 'next/dynamic'
 import { useState } from 'react'
 import { BlockMath } from 'react-katex'
 import PlotType from 'react-plotly.js'
+import { toast } from 'sonner'
 
+import { randomIntegration } from '@/services/integration'
 import { NotoSansMath } from '@/utils'
 
 const Plot = dynamic(() => import('react-plotly.js'), {
@@ -84,6 +87,21 @@ const TrapezoidalScene = () => {
     setAreaChart(data)
   }
 
+  const randomIntegrationMutation = useMutation({
+    mutationFn: () => randomIntegration(),
+  })
+  const onRandom = async () => {
+    try {
+      const res = await randomIntegrationMutation.mutateAsync()
+
+      setFunc(res.func)
+      setXStart(res.xStart)
+      setXEnd(res.xEnd)
+    } catch (e) {
+      toast.error((e as Error).message)
+    }
+  }
+
   return (
     <>
       <div className="box-shadow-default m-8 my-4 rounded-[12px] p-4">
@@ -96,6 +114,7 @@ const TrapezoidalScene = () => {
                   required
                   type="text"
                   className={`border p-2 ${NotoSansMath.className}`}
+                  value={func}
                   onChange={e => {
                     setFunc(e.currentTarget.value)
                   }}
@@ -107,7 +126,7 @@ const TrapezoidalScene = () => {
                   type="number"
                   step=".000001"
                   className={`border p-2 ${NotoSansMath.className}`}
-                  defaultValue={xStart}
+                  value={xStart}
                   onChange={e => {
                     setXStart(parseFloat(e.currentTarget.value))
                   }}
@@ -119,13 +138,19 @@ const TrapezoidalScene = () => {
                   type="number"
                   step=".000001"
                   className={`border p-2 ${NotoSansMath.className}`}
-                  defaultValue={xEnd}
+                  value={xEnd}
                   onChange={e => {
                     setXEnd(parseFloat(e.currentTarget.value))
                   }}
                 />
               </div>
             </div>
+            <button
+              className="mt-2 rounded-md bg-teal-400 px-24 py-2 transition-all hover:bg-teal-500"
+              onClick={() => onRandom()}
+            >
+              Random
+            </button>
             <button
               className="mt-2 flex items-center justify-center rounded-lg bg-gray-400 px-24 py-2 text-white transition-all hover:bg-gray-500 active:bg-gray-600"
               onClick={() => calculateTrapezoidal()}

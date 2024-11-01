@@ -1,9 +1,11 @@
 import 'katex/dist/katex.min.css'
+import { useMutation } from '@tanstack/react-query'
 import { MathJax } from 'better-react-mathjax'
 import { useState } from 'react'
 import { BlockMath } from 'react-katex'
 import { toast } from 'sonner'
 
+import { randomInterpolation } from '@/services/inter'
 import { NotoSansMath } from '@/utils'
 
 const SplineScene = () => {
@@ -52,6 +54,21 @@ const SplineScene = () => {
     }
   }
 
+  const randomInterpolationMutation = useMutation({
+    mutationFn: () => randomInterpolation(),
+  })
+  const onRandom = async () => {
+    try {
+      const res = await randomInterpolationMutation.mutateAsync()
+
+      setPointCount(res.points)
+      setXValues(res.x)
+      setFxValues(res.fx)
+    } catch (e) {
+      toast.error((e as Error).message)
+    }
+  }
+
   return (
     <>
       <div className="box-shadow-default m-8 my-4 rounded-[12px] p-4">
@@ -82,7 +99,13 @@ const SplineScene = () => {
                 onChange={e => setStartX(+e.currentTarget.value)}
               />
               <button
-                className="ml-4 rounded-md bg-green-200 px-4 py-2 transition-all hover:bg-green-300"
+                className="ml-4 rounded-md bg-teal-400 px-4 py-2 transition-all hover:bg-teal-500"
+                onClick={() => onRandom()}
+              >
+                Random
+              </button>
+              <button
+                className="rounded-md bg-green-200 px-4 py-2 transition-all hover:bg-green-300"
                 onClick={() => calculateSpline()}
               >
                 Calculate
