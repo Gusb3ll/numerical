@@ -1,8 +1,11 @@
 import 'katex/dist/katex.min.css'
+import { useMutation } from '@tanstack/react-query'
 import { MathJax } from 'better-react-mathjax'
 import { useState } from 'react'
 import { BlockMath } from 'react-katex'
+import { toast } from 'sonner'
 
+import { randomMatrix } from '@/services/linear'
 import { NotoSansMath } from '@/utils'
 
 const GaussJordanScene = () => {
@@ -78,6 +81,39 @@ const GaussJordanScene = () => {
     setData(stepsArray)
   }
 
+  const onDimensionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const currentMatrix = matrix
+    const newMatrix = Array.from({ length: +e.currentTarget.value }, (_, i) =>
+      Array.from(
+        { length: +e.currentTarget.value },
+        (_, j) => currentMatrix[i]?.[j] ?? 0,
+      ),
+    )
+    setMatrix(newMatrix)
+
+    const newEqual = Array.from(
+      { length: +e.currentTarget.value },
+      (_, i) => matrixEqual[i] ?? 0,
+    )
+    setMatrixEqual(newEqual)
+
+    setDimension(+e.currentTarget.value)
+  }
+
+  const randomMatrixMutation = useMutation({
+    mutationFn: () => randomMatrix(dimension),
+  })
+
+  const onRandom = async () => {
+    try {
+      const res = await randomMatrixMutation.mutateAsync()
+      setMatrix(res.matrix)
+      setMatrixEqual(res.matrixEqual)
+    } catch (e) {
+      toast.error((e as Error).message)
+    }
+  }
+
   return (
     <>
       <div className="box-shadow-default m-8 my-4 rounded-[12px] p-4">
@@ -90,21 +126,14 @@ const GaussJordanScene = () => {
               value={dimension}
               min={2}
               className={`border p-2 ${NotoSansMath.className}`}
-              onChange={e => {
-                const currentMatrix = matrix
-                const newMatrix = Array.from(
-                  { length: +e.currentTarget.value },
-                  (_, i) =>
-                    Array.from(
-                      { length: +e.currentTarget.value },
-                      (_, j) => currentMatrix[i]?.[j] ?? 0,
-                    ),
-                )
-                setMatrix(newMatrix)
-
-                setDimension(+e.currentTarget.value)
-              }}
+              onChange={e => onDimensionChange(e)}
             />
+            <button
+              className="rounded-md bg-teal-400 px-4 py-2 transition-all hover:bg-teal-500"
+              onClick={() => onRandom()}
+            >
+              Random
+            </button>
             <button
               className="rounded-md bg-green-200 px-4 py-2 transition-all hover:bg-green-300"
               onClick={() =>

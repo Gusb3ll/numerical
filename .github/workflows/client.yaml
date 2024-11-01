@@ -33,8 +33,6 @@ jobs:
       - name: Create .env file
         run: |
           echo "NODE_ENV=production" >> .env
-          echo "NEXTAUTH_URL=https://numer.lico.moe" >> .env
-          echo "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}" >> .env
           echo "NEXT_PUBLIC_ENDPOINT=https://iloveyoumysensei.lico.moe" >> .env
 
       - name: Build and push Docker image
