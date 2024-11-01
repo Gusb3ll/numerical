@@ -60,10 +60,8 @@ const SimpleRegressionScene = () => {
 
       for (let i = 0; i < matrixSize; i++) {
         const modify = matrix.map(row => [...row])
-        // console.log(modify)
         for (let j = 0; j < matrixSize; j++) {
           modify[j][i] = matrixB[j]
-          // console.log(modify[j][i])
         }
         const detAi = det(modify)
         solutions.push(detAi / detA)
@@ -72,8 +70,6 @@ const SimpleRegressionScene = () => {
           `a_${i} = \\frac{\\text{det}(a_{${i}})}{\\text{det}(A)} = \\frac{${detAi}}{${detA}} = ${solutions[i]}`,
         )
       }
-
-      console.log('Solutions:', solutions)
 
       solutions.forEach((solution, i) => {
         stepsArray.push(`a_${i} = ${solution.toFixed(6)}`)

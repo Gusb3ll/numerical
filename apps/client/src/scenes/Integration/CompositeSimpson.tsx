@@ -56,8 +56,6 @@ const CompositeSimpsonScene = () => {
     try {
       const res = await randomIntegrationMutation.mutateAsync()
 
-      console.log(res)
-
       setFunc(res.func)
       setXStart(res.xStart)
       setXEnd(res.xEnd)

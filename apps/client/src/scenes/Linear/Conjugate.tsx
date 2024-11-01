@@ -46,7 +46,6 @@ const ConjugateScene = () => {
     }
 
     D = [...R] // 12 17 14 7
-    // console.log(D)
 
     let iteration = 0
     let e1 = 1
@@ -61,24 +60,18 @@ const ConjugateScene = () => {
 
       for (let i = 0; i < n; i++) {
         tempR += R[i] * R[i]
-        // console.log(tempR)
         for (let j = 0; j < n; j++) {
           tempAD[i] += A[i][j] * D[j]
-          // console.log(tempAD)
         }
       }
       let tempDAD = 0
       for (let i = 0; i < n; i++) {
         tempDAD += D[i] * tempAD[i]
-        // console.log(tempAD[i])
       }
       lamda = tempR / tempDAD
 
-      // console.log(lamda)
-
       for (let i = 0; i < n; i++) {
         X[i] = X[i] + lamda * D[i]
-        // console.log(X[i])
       }
 
       const newR = Array(n).fill(0)
@@ -89,7 +82,6 @@ const ConjugateScene = () => {
           tempSum += A[i][j] * X[j]
         }
         newR[i] = tempSum - matrixEqual[i]
-        // console.log(newR[i])
       }
 
       e1 = Math.sqrt(newR.reduce((acc, val) => acc + val * val, 0))
@@ -100,17 +92,14 @@ const ConjugateScene = () => {
         for (let j = 0; j < n; j++) {
           tempnewR += newR[i] * A[i][j] * D[j]
           tempnewR1 += D[i] * A[i][j] * D[j]
-          // console.log(tempnewR1)
         }
       }
 
       alpha = tempnewR / tempnewR1
-      // console.log(alpha)
 
       for (let i = 0; i < n; i++) {
         for (let j = 0; j < n; j++) {
           D[i] = alpha * D[i] - newR[i]
-          console.log(D[i])
         }
       }
 

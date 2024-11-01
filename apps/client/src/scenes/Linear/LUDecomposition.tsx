@@ -126,7 +126,6 @@ const LUDecompositionScene = () => {
     // Backward substitution to solve U * X = Y
     for (let i = n - 1; i >= 0; i--) {
       let temp = parseFloat(Y[i])
-      console.log(temp)
       for (let j = n - 1; j > i; j--) {
         temp -= U[i][j] * X[j]
       }

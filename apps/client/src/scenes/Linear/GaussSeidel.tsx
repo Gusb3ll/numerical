@@ -51,7 +51,6 @@ const GaussSeidelScene = () => {
         for (let j = 0; j < n; j++) {
           if (i !== j) {
             temp += A[i][j] * X[j]
-            console.log(temp)
           }
         }
         newX[i] = (matrixEqual[i] - temp) / A[i][i]
