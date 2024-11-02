@@ -1,4 +1,5 @@
 import 'katex/dist/katex.min.css'
+import { useMutation } from '@tanstack/react-query'
 import { MathJax } from 'better-react-mathjax'
 import { det } from 'mathjs'
 import dynamic from 'next/dynamic'
@@ -7,6 +8,7 @@ import { BlockMath } from 'react-katex'
 import PlotType from 'react-plotly.js'
 import { toast } from 'sonner'
 
+import { randomInterpolation } from '@/services/inter'
 import { NotoSansMath } from '@/utils'
 
 const Plot = dynamic(() => import('react-plotly.js'), {
@@ -102,6 +104,23 @@ const SimpleRegressionScene = () => {
     }
   }
 
+  const randomRegressionMutation = useMutation({
+    mutationFn: () => randomInterpolation(),
+  })
+
+  const onRandom = async () => {
+    try {
+      const res = await randomRegressionMutation.mutateAsync()
+
+      setXValues(res.x)
+      setFxValues(res.fx)
+      setPointCount(res.x.length)
+      setStartX(res.xStart)
+    } catch (e) {
+      toast.error((e as Error).message)
+    }
+  }
+
   return (
     <>
       <div className="box-shadow-default m-8 my-4 rounded-[12px] p-4">
@@ -132,7 +151,13 @@ const SimpleRegressionScene = () => {
                 onChange={e => setStartX(+e.currentTarget.value)}
               />
               <button
-                className="ml-4 rounded-md bg-green-200 px-4 py-2 transition-all hover:bg-green-300"
+                className="ml-4 rounded-md bg-teal-400 px-4 py-2 transition-all hover:bg-teal-500"
+                onClick={() => onRandom()}
+              >
+                Random
+              </button>
+              <button
+                className="rounded-md bg-green-200 px-4 py-2 transition-all hover:bg-green-300"
                 onClick={() => calculateRegression()}
               >
                 Calculate

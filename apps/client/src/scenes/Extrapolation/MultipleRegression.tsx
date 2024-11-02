@@ -132,6 +132,7 @@ const MultipleRegressionScene = () => {
                 className={`border p-2 ${NotoSansMath.className}`}
                 onChange={e => setStartX(+e.currentTarget.value)}
               />
+
               <button
                 className="ml-4 rounded-md bg-green-200 px-4 py-2 transition-all hover:bg-green-300"
                 onClick={() => calculateRegression()}
