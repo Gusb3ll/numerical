@@ -140,7 +140,7 @@ const SimpleRegressionScene = () => {
             </div>
             <div className="flex flex-row items-center gap-2">
               <h1 className="flex flex-row gap-2 text-xl font-bold">
-                <MathJax>{'`X`'}</MathJax> Value:{' '}
+                Value <MathJax>{'`X`'}</MathJax>:
               </h1>
               <input
                 required
